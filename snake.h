@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <ncurses.h>
-#include <sys/time.h>
+#include <time.h>
 #include <stdbool.h>
 
 #define UP      0
@@ -21,7 +21,7 @@ extern block_t *snake;
 
 extern int key;
 extern int oldKey;
-extern int snaklen;
+extern int snakelen;
 
 /* 関数一覧 */
 void initGameScreen();

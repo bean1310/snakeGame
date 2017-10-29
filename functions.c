@@ -2,6 +2,10 @@
 
 int key;
 int oldKey;
+int snakelen = 1;
+
+int i;  //要変更
+
 block_t *snake, *block, *pAddr, *newAddr, *tmp;
 
 
@@ -20,14 +24,14 @@ void initGameScreen() {
         "     |                                                  |     \n"
         "     |                                                  |     \n" 
         "     |                                                  |     \n" 
-        "     |           n                                      |     \n" 
+        "     |           n        m         d                   |     \n" 
         "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
+        "     |                   n                              |     \n" 
         "     |                                      n           |     \n" 
+        "     |            d                                     |     \n" 
         "     |                                                  |     \n" 
         "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
+        "     |                      m                           |     \n" 
         "     |                                                  |     \n"
         "     |                                                  |     \n"
         "     |                                                  |     \n" 
@@ -42,8 +46,8 @@ void initGameScreen() {
         "     |                                                  |     \n"
         "     |                                                  |     \n"
         "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
+        "     |                    m                             |     \n"
+        "     |                                        d         |     \n"
         "     |                                                  |     \n"
         "     |                                                  |     \n" 
         "     |              n                                   |     \n" 
@@ -54,7 +58,7 @@ void initGameScreen() {
         "     |                                                  |     \n" 
         "     |                                                  |     \n" 
         "     |                                                  |     \n" 
-        "     |                                   n              |     \n"
+        "     |                                   m              |     \n"
         "     |                                                  |     \n"
         "     |                                                  |     \n"
         "     |                                                  |     \n"
@@ -93,24 +97,68 @@ void crawl(int udlr) {
 
         move(block -> y, block -> x);
 
-        if(*unctrl(inch()) == 'n') {
-            /* 増やす */
-            newAddr = (block_t *)malloc(sizeof(block_t));
-            tmp = snake;
+        switch (*unctrl(inch())) {
+            case 'n' : 
+                /* 増やす */
+                newAddr = (block_t *)malloc(sizeof(block_t));
+                snakelen += 1;
+                tmp = snake;
 
-            while(tmp -> next != NULL){
+                while(tmp -> next != NULL){
 
-                tmp = tmp -> next;
+                    tmp = tmp -> next;
 
-            }
+                }
 
-            newAddr -> next = NULL;
-            newAddr -> x = tmp -> x;
-            newAddr -> y = tmp -> y;
-            tmp -> next = newAddr;
+                newAddr -> next = NULL;
+                newAddr -> x = tmp -> x;
+                newAddr -> y = tmp -> y;
+                tmp -> next = newAddr;
 
-        }else if(*unctrl(inch()) == 'x'){
-            //Gameover
+                break;
+
+            case 'm' : 
+                /* 蛇の長さを2倍にする */
+                for(i = 0; i < snakelen; i++) {
+                    newAddr = (block_t *)malloc(sizeof(block_t));
+                    tmp = snake;
+
+                    while(tmp -> next != NULL){
+
+                        tmp = tmp -> next;
+
+                    } 
+
+                    newAddr -> next = NULL;
+                    newAddr -> x = tmp -> x;
+                    newAddr -> y = tmp -> y;
+                    tmp -> next = newAddr;
+                }
+
+                snakelen *= 2;
+
+                break;
+
+            case 'd' :
+                /* 蛇の長さを半分にする */
+                if(snakelen > 1) {
+                    tmp = snake;
+                    for (i = 0; i < (snakelen / 2) - 1; i++) {
+                        tmp = tmp -> next;
+                    }
+                    killsnake(tmp -> next);
+                    tmp -> next = NULL;
+
+                    snakelen /= 2;
+                }
+
+                break;
+
+            case 'x' : //GameOver
+                break;
+
+            default : break;
+            
         }
 
         addch('x');

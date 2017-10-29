@@ -9,8 +9,12 @@ int main(void) {
 
     snake = (block_t *)malloc(sizeof(block_t));
 
-    snake -> x = 6;
-    snake -> y = 1;
+    srand((unsigned int)time(NULL));
+
+
+
+    snake -> x = rand() % 50 + 6;
+    snake -> y = rand() % 50 + 1;
     snake -> next = NULL;
     
     initGameScreen();
