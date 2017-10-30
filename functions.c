@@ -2,14 +2,22 @@
 
 int key;
 int oldKey;
-int snakelen = 1;
 
 int i;  //要変更
 
-block_t *snake, *block, *pAddr, *newAddr, *tmp;
+int snakelen = 1;
+
+int windowMin_X;
+int windowMax_X;
+int windowMin_Y;
+int windowMax_Y;
+
+block_t *snake, *block, *newAddr, *tmp;
 
 
 void initGameScreen() {
+
+    WINDOW *win_Addr;
 
     initscr();
     curs_set(0);
@@ -17,60 +25,83 @@ void initGameScreen() {
     noecho();
     keypad(stdscr,TRUE);
 
-    addstr(
-        "     +--------------------------------------------------+     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
-        "     |           n        m         d                   |     \n" 
-        "     |                                                  |     \n" 
-        "     |                   n                              |     \n" 
-        "     |                                      n           |     \n" 
-        "     |            d                                     |     \n" 
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
-        "     |                      m                           |     \n" 
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
-        "     |                         n                        |     \n" 
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                    m                             |     \n"
-        "     |                                        d         |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n" 
-        "     |              n                                   |     \n" 
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
-        "     |                                                  |     \n" 
-        "     |                                   m              |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                  n                               |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                                                  |     \n"
-        "     |                          n                       |     \n"
-        "     +--------------------------------------------------+     "
-    );
+    windowMin_X = (COLS - WIDTH) / 2;
+    windowMax_X = WIDTH + windowMin_X - 1;
+    windowMin_Y = (LINES - HEIGHT) / 2;
+    windowMax_Y = HEIGHT + windowMin_Y - 1;
+
+// #ifdef TEST
+
+//     addstr(
+//         "     +--------------------------------------------------+     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |           n        m         d                   |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                   n                              |     \n" 
+//         "     |                                      n           |     \n" 
+//         "     |            d                                     |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                      m                           |     \n" 
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                         n                        |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                    m                             |     \n"
+//         "     |                                        d         |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n" 
+//         "     |              n                                   |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                                                  |     \n" 
+//         "     |                                   m              |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                  n                               |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                                                  |     \n"
+//         "     |                          n                       |     \n"
+//         "     +--------------------------------------------------+     \n"
+//         "     |                 --- Test Map ---                 |     \n"
+//         "     +--------------------------------------------------+     "
+//     );
+
+// #else
+
+    refresh();
+    win_Addr = newwin(HEIGHT, WIDTH, windowMin_Y, windowMin_X);
+    box(win_Addr, 0 , 0);
+    srand((unsigned int)time(NULL));
+    
+    snake -> x = rand() % (WIDTH - 1) + windowMin_X;
+    snake -> y = rand() % (HEIGHT - 1) + windowMin_Y;
+    snake -> next = NULL;
+    wrefresh(win_Addr);
+
+//#endif
     
 }
 
@@ -83,21 +114,24 @@ void crawl(int udlr) {
 
         if(parent){
 
+            //1マス進むためにすべてのブロックをずらす準備
             shiftBlocks(snake);
 
-            if(udlr == UP)
-                block -> y -= 1;
-            else if(udlr == DOWN)
-                block -> y += 1;
-            else if(udlr == LEFT)
-                block -> x -= 1;
-            else
-                block -> x += 1;
+            //
+            switch(udlr) {
+                
+                case UP     : block -> y -= 1; break;
+                case DOWN   : block -> y += 1; break;
+                case LEFT   : block -> x -= 1; break;
+                case RIGHT  : block -> x += 1; break;
+
+            }
+
         }
 
         move(block -> y, block -> x);
 
-        switch (*unctrl(inch())) {
+        switch(*unctrl(inch())) {
             case 'n' : 
                 /* 増やす */
                 newAddr = (block_t *)malloc(sizeof(block_t));

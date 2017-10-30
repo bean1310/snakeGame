@@ -1,29 +1,32 @@
 #include "snake.h"
 
+block_t *snake;
+
+int food_X;
+int food_Y;
+
 int key = 0;
 int oldKey;
-int snaklen = 2;
-block_t *snake;
+
+int windowMin_X;
+int windowMax_X;
+int windowMin_Y;
+int windowMax_Y;
 
 int main(void) {
 
     snake = (block_t *)malloc(sizeof(block_t));
 
-    srand((unsigned int)time(NULL));
+    food_X = rand() % 50 + 6;
+    food_Y = rand() % 50 + 1;
 
-
-
-    snake -> x = rand() % 50 + 6;
-    snake -> y = rand() % 50 + 1;
-    snake -> next = NULL;
-    
     initGameScreen();
 
     timeout(200);
 
     key = ERR;
     oldKey = KEY_DOWN;
-    while(5 < snake -> x && snake -> x < 56 && 0 < snake -> y && snake -> y < 51) {
+    while( (windowMin_X < snake -> x && snake -> x < windowMax_X) && (windowMin_Y < snake -> y && snake -> y < windowMax_Y) ) {
         if(key == ERR) {
             key = oldKey;
         }
@@ -39,6 +42,8 @@ int main(void) {
 
             case 'd' : /* 右キーと同じ処理 */
             case KEY_RIGHT : crawl(RIGHT); break;
+
+            case 'q' : /* 一時中断 */ break;
             
             default : break;
         }

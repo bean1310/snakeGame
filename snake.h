@@ -11,6 +11,9 @@
 #define LEFT    2
 #define RIGHT   3
 
+#define WIDTH 100
+#define HEIGHT 50
+
 typedef struct blockData{
     int x;
     int y;
@@ -19,9 +22,18 @@ typedef struct blockData{
 
 extern block_t *snake;
 
+extern int snakelen;
+
+extern int food_X;
+extern int food_Y;
+
+extern int windowMin_X;
+extern int windowMax_X;
+extern int windowMin_Y;
+extern int windowMax_Y;
+
 extern int key;
 extern int oldKey;
-extern int snakelen;
 
 /* 関数一覧 */
 void initGameScreen();
