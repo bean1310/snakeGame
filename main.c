@@ -2,9 +2,6 @@
 
 block_t *snake;
 
-int food_X;
-int food_Y;
-
 int key = 0;
 int oldKey;
 
@@ -17,12 +14,7 @@ int main(void) {
 
     snake = (block_t *)malloc(sizeof(block_t));
 
-    food_X = rand() % 50 + 6;
-    food_Y = rand() % 50 + 1;
-
     initGameScreen();
-
-    timeout(200);
 
     key = ERR;
     oldKey = KEY_DOWN;

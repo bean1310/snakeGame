@@ -11,8 +11,8 @@
 #define LEFT    2
 #define RIGHT   3
 
-#define WIDTH 100
-#define HEIGHT 50
+#define WIDTH 80
+#define HEIGHT 40
 
 typedef struct blockData{
     int x;
@@ -40,5 +40,7 @@ void initGameScreen();
 
 void crawl(int udlr);
 
+void addBlock();
+void addFoods();
 void shiftBlocks(block_t *head);
 void killsnake(block_t *);

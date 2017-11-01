@@ -12,12 +12,15 @@ int windowMax_X;
 int windowMin_Y;
 int windowMax_Y;
 
+int food_X;
+int food_Y;
+
 block_t *snake, *block, *newAddr, *tmp;
 
 
 void initGameScreen() {
 
-    WINDOW *win_Addr;
+    WINDOW *mainWin_Addr, *titleWin_Addr;
 
     initscr();
     curs_set(0);
@@ -30,78 +33,24 @@ void initGameScreen() {
     windowMin_Y = (LINES - HEIGHT) / 2;
     windowMax_Y = HEIGHT + windowMin_Y - 1;
 
-// #ifdef TEST
-
-//     addstr(
-//         "     +--------------------------------------------------+     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |           n        m         d                   |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                   n                              |     \n" 
-//         "     |                                      n           |     \n" 
-//         "     |            d                                     |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                      m                           |     \n" 
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                         n                        |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                    m                             |     \n"
-//         "     |                                        d         |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n" 
-//         "     |              n                                   |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                                                  |     \n" 
-//         "     |                                   m              |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                  n                               |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                                                  |     \n"
-//         "     |                          n                       |     \n"
-//         "     +--------------------------------------------------+     \n"
-//         "     |                 --- Test Map ---                 |     \n"
-//         "     +--------------------------------------------------+     "
-//     );
-
-// #else
-
     refresh();
-    win_Addr = newwin(HEIGHT, WIDTH, windowMin_Y, windowMin_X);
-    box(win_Addr, 0 , 0);
+    mainWin_Addr = newwin(HEIGHT, WIDTH, windowMin_Y, windowMin_X);
+    titleWin_Addr = newwin(3, WIDTH, windowMin_Y - 2, windowMin_X);
+    move(windowMin_Y - 1, windowMin_X + (WIDTH - 10) / 2 );
+    addstr("Snake Game");
+    box(mainWin_Addr, 0 , 0);
+    box(titleWin_Addr, 0 , 0);
     srand((unsigned int)time(NULL));
     
     snake -> x = rand() % (WIDTH - 1) + windowMin_X;
     snake -> y = rand() % (HEIGHT - 1) + windowMin_Y;
     snake -> next = NULL;
-    wrefresh(win_Addr);
+    wrefresh(mainWin_Addr);
+    wrefresh(titleWin_Addr);
 
-//#endif
+    timeout(200);
+
+    addFoods();
     
 }
 
@@ -109,10 +58,9 @@ void crawl(int udlr) {
 
     block = snake;
 
-    bool parent = true;
     while(block != NULL){
 
-        if(parent){
+        if(block == snake){
 
             //1マス進むためにすべてのブロックをずらす準備
             shiftBlocks(snake);
@@ -134,42 +82,19 @@ void crawl(int udlr) {
         switch(*unctrl(inch())) {
             case 'n' : 
                 /* 増やす */
-                newAddr = (block_t *)malloc(sizeof(block_t));
-                snakelen += 1;
-                tmp = snake;
-
-                while(tmp -> next != NULL){
-
-                    tmp = tmp -> next;
-
-                }
-
-                newAddr -> next = NULL;
-                newAddr -> x = tmp -> x;
-                newAddr -> y = tmp -> y;
-                tmp -> next = newAddr;
+                addBlock();
+                addFoods();
 
                 break;
 
             case 'm' : 
                 /* 蛇の長さを2倍にする */
                 for(i = 0; i < snakelen; i++) {
-                    newAddr = (block_t *)malloc(sizeof(block_t));
-                    tmp = snake;
-
-                    while(tmp -> next != NULL){
-
-                        tmp = tmp -> next;
-
-                    } 
-
-                    newAddr -> next = NULL;
-                    newAddr -> x = tmp -> x;
-                    newAddr -> y = tmp -> y;
-                    tmp -> next = newAddr;
                 }
 
-                snakelen *= 2;
+                addBlock();
+
+                //snakelen *= 2;
 
                 break;
 
@@ -184,6 +109,7 @@ void crawl(int udlr) {
                     tmp -> next = NULL;
 
                     snakelen /= 2;
+                    addBlock();
                 }
 
                 break;
@@ -195,9 +121,9 @@ void crawl(int udlr) {
             
         }
 
+        move(block -> y, block -> x);
         addch('x');
         block = block -> next;
-        parent = false;
 
     }
 
@@ -212,6 +138,36 @@ void crawl(int udlr) {
         addch(' ');
         block = block -> next;
     }
+
+}
+
+void addBlock() {
+
+    newAddr = (block_t *)malloc(sizeof(block_t));
+    snakelen += 1;
+    tmp = snake;
+
+    while(tmp -> next != NULL){
+
+        tmp = tmp -> next;
+
+    }
+
+    newAddr -> next = NULL;
+    newAddr -> x = tmp -> x;
+    newAddr -> y = tmp -> y;
+    tmp -> next = newAddr;
+
+}
+
+void addFoods() {
+
+    food_X = rand() % (WIDTH - 1) + windowMin_X;
+    food_Y = rand() % (HEIGHT - 1) + windowMin_Y;
+
+    move(food_Y, food_X);
+
+    addch('n');
 
 }
 
