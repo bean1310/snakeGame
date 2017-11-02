@@ -17,12 +17,19 @@ int food_Y;
 
 block_t *snake, *block, *newAddr, *tmp;
 
-
+/* 
+ *
+ * ゲーム画面の描画 (移植しやすい)
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ * 定数WIDTHが横幅, HEIGHTが縦幅, GAME_NAMEがゲーム名入れるとそれに従ってウィンドウ作成
+ * 
+ */
 void initGameScreen() {
 
     WINDOW *mainWin_Addr, *titleWin_Addr;
 
     initscr();
+    start_color();
     curs_set(0);
     cbreak();
     noecho();
@@ -36,26 +43,49 @@ void initGameScreen() {
     refresh();
     mainWin_Addr = newwin(HEIGHT, WIDTH, windowMin_Y, windowMin_X);
     titleWin_Addr = newwin(3, WIDTH, windowMin_Y - 2, windowMin_X);
-    move(windowMin_Y - 1, windowMin_X + (WIDTH - 10) / 2 );
-    addstr("Snake Game");
+    move(windowMin_Y - 1, windowMin_X + (WIDTH - (int)strlen(GAME_NAME)) / 2 );
+    addstr(GAME_NAME);
     box(mainWin_Addr, 0 , 0);
     box(titleWin_Addr, 0 , 0);
     srand((unsigned int)time(NULL));
     
+    wrefresh(mainWin_Addr);
+    wrefresh(titleWin_Addr);    
+    
+}
+
+/* 
+ *
+ * ゲームの設定(移植不可)
+ * ^^^^^^^^^^^^^^^^^^^^^^^
+ * 蛇の初期位置とキー入力待ち時間の初期設定を行う.その後food()関数で食べ物設置
+ * 
+ */
+void initGameConfig(){
+
+    snake = (block_t *)malloc(sizeof(block_t));
+
     snake -> x = rand() % (WIDTH - 1) + windowMin_X;
     snake -> y = rand() % (HEIGHT - 1) + windowMin_Y;
     snake -> next = NULL;
-    wrefresh(mainWin_Addr);
-    wrefresh(titleWin_Addr);
 
     timeout(200);
 
     addFoods();
-    
+
 }
+
+/* 
+ * 
+ * 蛇を操作するキーを押された時の処理(移植不可)
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ * 
+ * 
+ */
 
 void crawl(int udlr) {
 
+    int lentmp;
     block = snake;
 
     while(block != NULL){
@@ -65,7 +95,7 @@ void crawl(int udlr) {
             //1マス進むためにすべてのブロックをずらす準備
             shiftBlocks(snake);
 
-            //
+            //押されたボタンで進行方向決定
             switch(udlr) {
                 
                 case UP     : block -> y -= 1; break;
@@ -89,12 +119,12 @@ void crawl(int udlr) {
 
             case 'm' : 
                 /* 蛇の長さを2倍にする */
-                for(i = 0; i < snakelen; i++) {
+                lentmp = snakelen;
+                for(i = 0; i < lentmp; i++) {
+                    addBlock();
                 }
 
-                addBlock();
-
-                //snakelen *= 2;
+                addFoods();
 
                 break;
 
@@ -105,11 +135,11 @@ void crawl(int udlr) {
                     for (i = 0; i < (snakelen / 2) - 1; i++) {
                         tmp = tmp -> next;
                     }
-                    killsnake(tmp -> next);
+                    killSnake(tmp -> next);
                     tmp -> next = NULL;
 
                     snakelen /= 2;
-                    addBlock();
+                    addFoods();
                 }
 
                 break;
@@ -162,12 +192,20 @@ void addBlock() {
 
 void addFoods() {
 
-    food_X = rand() % (WIDTH - 1) + windowMin_X;
-    food_Y = rand() % (HEIGHT - 1) + windowMin_Y;
+    int foodType = rand() % 10;
+
+    food_X = rand() % (WIDTH - 2) + 1 + windowMin_X;
+    food_Y = rand() % (HEIGHT - 2) + 1 + windowMin_Y;
 
     move(food_Y, food_X);
 
-    addch('n');
+    if(foodType < 6){
+        addch('n');
+    }else if(foodType < 8){
+        addch('m');
+    }else{
+        addch('d');
+    }
 
 }
 
@@ -184,10 +222,10 @@ void shiftBlocks(block_t *head) {
 
 }
 
-void killsnake(block_t *head){
+void killSnake(block_t *head){
 
     if(head -> next != NULL) {
-        killsnake(head -> next);
+        killSnake(head -> next);
     }
 
     free(head);

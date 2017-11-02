@@ -12,9 +12,8 @@ int windowMax_Y;
 
 int main(void) {
 
-    snake = (block_t *)malloc(sizeof(block_t));
-
     initGameScreen();
+    initGameConfig();
 
     key = ERR;
     oldKey = KEY_DOWN;
@@ -35,13 +34,13 @@ int main(void) {
             case 'd' : /* 右キーと同じ処理 */
             case KEY_RIGHT : crawl(RIGHT); break;
 
-            case 'q' : /* 一時中断 */ break;
+            case 'q' : /* 一時中断 */ sleep(2); key = oldKey; break;
             
             default : break;
         }
     }
 
-    killsnake(snake);
+    killSnake(snake);
 
     endwin();
 

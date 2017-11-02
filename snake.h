@@ -1,10 +1,13 @@
 /* ヘッダファイル */
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <ncurses.h>
 #include <time.h>
 #include <stdbool.h>
+
+#define GAME_NAME "Snake Game"
 
 #define UP      0
 #define DOWN    1
@@ -37,10 +40,11 @@ extern int oldKey;
 
 /* 関数一覧 */
 void initGameScreen();
+void initGameConfig();
 
 void crawl(int udlr);
 
 void addBlock();
 void addFoods();
 void shiftBlocks(block_t *head);
-void killsnake(block_t *);
+void killSnake(block_t *);
