@@ -43,8 +43,7 @@ void initGameScreen() {
     refresh();
     mainWin_Addr = newwin(HEIGHT, WIDTH, windowMin_Y, windowMin_X);
     titleWin_Addr = newwin(3, WIDTH, windowMin_Y - 2, windowMin_X);
-    move(windowMin_Y - 1, windowMin_X + (WIDTH - (int)strlen(GAME_NAME)) / 2 );
-    addstr(GAME_NAME);
+    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, WIDTH);
     box(mainWin_Addr, 0 , 0);
     box(titleWin_Addr, 0 , 0);
     srand((unsigned int)time(NULL));
@@ -139,8 +138,9 @@ void crawl(int udlr) {
                     tmp -> next = NULL;
 
                     snakelen /= 2;
-                    addFoods();
                 }
+
+                addFoods();
 
                 break;
 
@@ -209,6 +209,78 @@ void addFoods() {
 
 }
 
+bool pauseGame() {
+
+    char title[] = "pause";
+    char cpyKey;
+    int tmp, oldTmp;
+    int y;
+
+    addchXCenter("          ", windowMin_Y - 1, windowMin_X, WIDTH);
+    addchXCenter(title, windowMin_Y - 1, windowMin_X, WIDTH);
+
+    move(food_Y, food_X);
+    cpyKey = *unctrl(inch());
+    addch(' ');
+
+    addchXCenter("[ ] Start", (windowMin_Y + windowMax_Y) / 2, windowMin_X, WIDTH);
+    addchXCenter("[ ] Exit ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, WIDTH);
+
+    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (WIDTH - 9) / 2 + 1);
+    addch('*');
+
+    refresh();
+
+    while(1) {
+        tmp = getch();
+        if(tmp != KEY_RIGHT) {
+
+            switch(tmp) {
+
+                case KEY_UP : 
+                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    addch(' '); 
+                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    addch('*');
+                    oldTmp = tmp;
+                    break;
+
+                case KEY_DOWN :
+                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    addch(' ');
+                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    addch('*');
+                    oldTmp = tmp;
+                    break;
+
+                default : break;
+
+            }
+
+        }else{
+
+            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, WIDTH);
+            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, WIDTH);
+
+            break;
+        }
+
+    }
+
+    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, WIDTH);
+
+    move(food_Y, food_X);
+    addch(cpyKey);
+
+    key = oldKey;
+
+    if(oldTmp == KEY_DOWN){
+        return true;
+    }
+
+    return false;
+}
+
 void shiftBlocks(block_t *head) {
 
     if(head -> next != NULL) {
@@ -231,3 +303,17 @@ void killSnake(block_t *head){
     free(head);
 
 }
+
+void addchXCenter(char *str, int y, int start, int len) {
+
+    move(y, start + (len - (int)strlen(str)) / 2);
+    addstr(str);
+
+}
+
+void addchYCenter(char *str, int x, int start, int len) {
+    
+        move(start + (len - (int)strlen(str)) / 2, x);
+        addstr(str);
+    
+    }

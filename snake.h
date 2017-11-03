@@ -46,5 +46,9 @@ void crawl(int udlr);
 
 void addBlock();
 void addFoods();
+bool pauseGame();
 void shiftBlocks(block_t *head);
 void killSnake(block_t *);
+
+void addchXCenter(char *str, int y, int start, int len);
+void addchYCenter(char *str, int x, int start, int len);
