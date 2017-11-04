@@ -112,16 +112,8 @@ bool crawl(int udlr) {
                 case RIGHT  : block -> x += 1; headchar = ACS_RARROW; break;
 
             }
-            block = block -> next;
-            while(block != NULL){
 
-                if(snake -> x == block -> x && snake -> y == block -> y)
-                    gameOver = true;
-
-                block = block -> next;
-            }
-
-            block = snake;
+            gameOver = isBody(snake -> next, snake -> x, snake -> y);
 
             move(block -> y, block -> x);
 
@@ -295,8 +287,12 @@ void addFoods() {
     
     int foodType = rand() % 10;
     
-    food_X = rand() % (WIDTH - 2) + 1 + windowMin_X;
-    food_Y = rand() % (HEIGHT - 2) + 1 + windowMin_Y;
+    do{
+
+        food_X = rand() % (WIDTH - 2) + 1 + windowMin_X;
+        food_Y = rand() % (HEIGHT - 2) + 1 + windowMin_Y;
+
+    }while(isBody(snake, food_X, food_Y) == true);
     
     move(food_Y, food_X);
     
@@ -366,4 +362,20 @@ bool keysAreRev(const int key1, const int key2) {
         return true;
 
     return false;
+}
+
+bool isBody(block_t *head, int x, int y) {
+
+    block_t *block = head;
+
+    while(block != NULL){
+
+        if(x == block -> x && y == block -> y)
+            return true;
+
+        block = block -> next;
+    }
+
+    return false;
+
 }

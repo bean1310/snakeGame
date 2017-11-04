@@ -48,3 +48,5 @@ void killSnake(block_t *);
 
 void addchXCenter(char *str, int y, int start, int len);
 bool keysAreRev(const int key1, const int key2);
+
+bool isBody(block_t *head, int x, int y);
