@@ -42,7 +42,7 @@ extern int oldKey;
 void initGameScreen();
 void initGameConfig();
 
-void crawl(int udlr);
+bool crawl(int udlr);
 
 void addBlock();
 void addFoods();

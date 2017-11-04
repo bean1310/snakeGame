@@ -82,12 +82,13 @@ void initGameConfig(){
  * 
  */
 
-void crawl(int udlr) {
+bool crawl(int udlr) {
 
     int lentmp;
+    bool gameOver = false;
     block = snake;
 
-    while(block != NULL){
+    while(block != NULL && gameOver == false){
 
         if(block == snake){
 
@@ -103,52 +104,58 @@ void crawl(int udlr) {
                 case RIGHT  : block -> x += 1; break;
 
             }
+            block = block -> next;
+            while(block != NULL){
 
-        }
+                if(snake -> x == block -> x && snake -> y == block -> y)
+                    gameOver = true;
 
-        move(block -> y, block -> x);
+                block = block -> next;
+            }
 
-        switch(*unctrl(inch())) {
-            case 'n' : 
-                /* 増やす */
-                addBlock();
-                addFoods();
+            block = snake;
 
-                break;
+            move(block -> y, block -> x);
 
-            case 'm' : 
-                /* 蛇の長さを2倍にする */
-                lentmp = snakelen;
-                for(i = 0; i < lentmp; i++) {
+            switch(*unctrl(inch())) {
+                case 'n' : 
+                    /* 増やす */
                     addBlock();
-                }
+                    addFoods();
 
-                addFoods();
+                    break;
 
-                break;
-
-            case 'd' :
-                /* 蛇の長さを半分にする */
-                if(snakelen > 1) {
-                    tmp = snake;
-                    for (i = 0; i < (snakelen / 2) - 1; i++) {
-                        tmp = tmp -> next;
+                case 'm' : 
+                    /* 蛇の長さを2倍にする */
+                    lentmp = snakelen;
+                    for(i = 0; i < lentmp; i++) {
+                        addBlock();
                     }
-                    killSnake(tmp -> next);
-                    tmp -> next = NULL;
 
-                    snakelen /= 2;
-                }
+                    addFoods();
 
-                addFoods();
+                    break;
 
-                break;
+                case 'd' :
+                    /* 蛇の長さを半分にする */
+                    if(snakelen > 1) {
+                        tmp = snake;
+                        for (i = 0; i < (snakelen / 2) - 1; i++) {
+                            tmp = tmp -> next;
+                        }
+                        killSnake(tmp -> next);
+                        tmp -> next = NULL;
 
-            case 'x' : //GameOver
-                break;
+                        snakelen /= 2;
+                    }
 
-            default : break;
+                    addFoods();
+
+                    break;
+
+                default : break;
             
+            }
         }
 
         move(block -> y, block -> x);
@@ -169,43 +176,7 @@ void crawl(int udlr) {
         block = block -> next;
     }
 
-}
-
-void addBlock() {
-
-    newAddr = (block_t *)malloc(sizeof(block_t));
-    snakelen += 1;
-    tmp = snake;
-
-    while(tmp -> next != NULL){
-
-        tmp = tmp -> next;
-
-    }
-
-    newAddr -> next = NULL;
-    newAddr -> x = tmp -> x;
-    newAddr -> y = tmp -> y;
-    tmp -> next = newAddr;
-
-}
-
-void addFoods() {
-
-    int foodType = rand() % 10;
-
-    food_X = rand() % (WIDTH - 2) + 1 + windowMin_X;
-    food_Y = rand() % (HEIGHT - 2) + 1 + windowMin_Y;
-
-    move(food_Y, food_X);
-
-    if(foodType < 6){
-        addch('n');
-    }else if(foodType < 8){
-        addch('m');
-    }else{
-        addch('d');
-    }
+    return gameOver;
 
 }
 
@@ -239,7 +210,7 @@ bool pauseGame() {
 
                 case KEY_UP : 
                     move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (WIDTH - 9) / 2 + 1);
-                    addch(' '); 
+                    addch(' ');
                     move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (WIDTH - 9) / 2 + 1);
                     addch('*');
                     oldTmp = tmp;
@@ -279,6 +250,44 @@ bool pauseGame() {
     }
 
     return false;
+}
+
+void addBlock() {
+    
+        newAddr = (block_t *)malloc(sizeof(block_t));
+        snakelen += 1;
+        tmp = snake;
+    
+        while(tmp -> next != NULL){
+    
+            tmp = tmp -> next;
+    
+        }
+    
+        newAddr -> next = NULL;
+        newAddr -> x = tmp -> x;
+        newAddr -> y = tmp -> y;
+        tmp -> next = newAddr;
+    
+    }
+    
+void addFoods() {
+    
+    int foodType = rand() % 10;
+    
+    food_X = rand() % (WIDTH - 2) + 1 + windowMin_X;
+    food_Y = rand() % (HEIGHT - 2) + 1 + windowMin_Y;
+    
+    move(food_Y, food_X);
+    
+    if(foodType < 6){
+        addch('n');
+    }else if(foodType < 8){
+        addch('m');
+    }else{
+        addch('d');
+    }
+    
 }
 
 void shiftBlocks(block_t *head) {
