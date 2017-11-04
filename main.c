@@ -1,15 +1,5 @@
 #include "snake.h"
-
-block_t *snake;
-
-int key = 0;
-int oldKey;
-
-int windowMin_X;
-int windowMax_X;
-int windowMin_Y;
-int windowMax_Y;
-
+ 
 int main(void) {
 
     bool gameOver = false;
@@ -20,8 +10,8 @@ int main(void) {
 
     key = ERR;
     oldKey = KEY_DOWN;
-    while( ((windowMin_X < snake -> x && snake -> x < windowMax_X) && (windowMin_Y < snake -> y && snake -> y < windowMax_Y)) && gameOver == false && stopGame == false) {
-        if(key == ERR) {
+    while(gameOver == false && stopGame == false) {
+        if(key == ERR || keysAreRev(key, oldKey) == true) {
             key = oldKey;
         }
         switch (key) {

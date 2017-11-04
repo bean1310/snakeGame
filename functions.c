@@ -1,12 +1,5 @@
 #include "snake.h"
 
-int key;
-int oldKey;
-
-int i;  //要変更
-
-int snakelen = 1;
-
 int windowMin_X;
 int windowMax_X;
 int windowMin_Y;
@@ -15,7 +8,7 @@ int windowMax_Y;
 int food_X;
 int food_Y;
 
-block_t *snake, *block, *newAddr, *tmp;
+int score = 0;
 
 /* 
  *
@@ -26,7 +19,9 @@ block_t *snake, *block, *newAddr, *tmp;
  */
 void initGameScreen() {
 
-    WINDOW *mainWin_Addr, *titleWin_Addr;
+    WINDOW *mainWin_Addr, *titleWin_Addr, *scoreWin_Addr;
+
+    srand((unsigned int)time(NULL)); 
 
     initscr();
     start_color();
@@ -41,15 +36,20 @@ void initGameScreen() {
     windowMax_Y = HEIGHT + windowMin_Y - 1;
 
     refresh();
+
     mainWin_Addr = newwin(HEIGHT, WIDTH, windowMin_Y, windowMin_X);
-    titleWin_Addr = newwin(3, WIDTH, windowMin_Y - 2, windowMin_X);
-    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, WIDTH);
     box(mainWin_Addr, 0 , 0);
-    box(titleWin_Addr, 0 , 0);
-    srand((unsigned int)time(NULL));
-    
     wrefresh(mainWin_Addr);
-    wrefresh(titleWin_Addr);    
+
+    titleWin_Addr = newwin(3, WIDTH, windowMin_Y - 2, windowMin_X);
+    box(titleWin_Addr, 0 , 0);
+    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, WIDTH);
+    wrefresh(titleWin_Addr);
+
+    scoreWin_Addr = newwin(3, WIDTH, windowMax_Y, windowMin_X);
+    box(scoreWin_Addr, 0 , 0);
+    showScore(score);
+    wrefresh(scoreWin_Addr); 
     
 }
 
@@ -64,8 +64,8 @@ void initGameConfig(){
 
     snake = (block_t *)malloc(sizeof(block_t));
 
-    snake -> x = rand() % (WIDTH - 1) + windowMin_X;
-    snake -> y = rand() % (HEIGHT - 1) + windowMin_Y;
+    snake -> x = rand() % (WIDTH - MARGIN_X * 2) + windowMin_X + MARGIN_X;
+    snake -> y = rand() % (HEIGHT - MARGIN_Y * 2) + windowMin_Y + MARGIN_Y;
     snake -> next = NULL;
 
     timeout(200);
@@ -84,9 +84,17 @@ void initGameConfig(){
 
 bool crawl(int udlr) {
 
+    static int snakeLen = 1;
     int lentmp;
     bool gameOver = false;
+    int headchar;
+    block_t *block;
+    block_t *tmp;
     block = snake;
+
+    /* 蛇の先端がウインドウ内ではないとき */
+    if(((windowMin_X < snake -> x && snake -> x < windowMax_X) && (windowMin_Y < snake -> y && snake -> y < windowMax_Y)) == false)
+        gameOver = true;
 
     while(block != NULL && gameOver == false){
 
@@ -98,10 +106,10 @@ bool crawl(int udlr) {
             //押されたボタンで進行方向決定
             switch(udlr) {
                 
-                case UP     : block -> y -= 1; break;
-                case DOWN   : block -> y += 1; break;
-                case LEFT   : block -> x -= 1; break;
-                case RIGHT  : block -> x += 1; break;
+                case UP     : block -> y -= 1; headchar = ACS_UARROW; break;
+                case DOWN   : block -> y += 1; headchar = ACS_DARROW; break;
+                case LEFT   : block -> x -= 1; headchar = ACS_LARROW; break;
+                case RIGHT  : block -> x += 1; headchar = ACS_RARROW; break;
 
             }
             block = block -> next;
@@ -120,36 +128,42 @@ bool crawl(int udlr) {
             switch(*unctrl(inch())) {
                 case 'n' : 
                     /* 増やす */
-                    addBlock();
+                    addBlock(snake, &snakeLen);
                     addFoods();
+                    updateScore(&score);
+                    showScore(score);
 
                     break;
 
                 case 'm' : 
                     /* 蛇の長さを2倍にする */
-                    lentmp = snakelen;
-                    for(i = 0; i < lentmp; i++) {
-                        addBlock();
+                    lentmp = snakeLen;
+                    loop(lentmp) {
+                        addBlock(snake, &snakeLen);
                     }
 
                     addFoods();
+                    updateScore(&score);
+                    showScore(score);
 
                     break;
 
                 case 'd' :
                     /* 蛇の長さを半分にする */
-                    if(snakelen > 1) {
+                    if(snakeLen > 1) {
                         tmp = snake;
-                        for (i = 0; i < (snakelen / 2) - 1; i++) {
+                        loop((snakeLen / 2) - 1) {
                             tmp = tmp -> next;
                         }
                         killSnake(tmp -> next);
                         tmp -> next = NULL;
 
-                        snakelen /= 2;
+                        snakeLen /= 2;
                     }
 
                     addFoods();
+                    updateScore(&score);
+                    showScore(score);
 
                     break;
 
@@ -159,7 +173,11 @@ bool crawl(int udlr) {
         }
 
         move(block -> y, block -> x);
-        addch('x');
+        if(block == snake){
+            addch(headchar);
+        }else{
+            addch('x');
+        }
         block = block -> next;
 
     }
@@ -252,11 +270,13 @@ bool pauseGame() {
     return false;
 }
 
-void addBlock() {
+void addBlock(block_t *head, int *len) {
     
-        newAddr = (block_t *)malloc(sizeof(block_t));
-        snakelen += 1;
-        tmp = snake;
+        block_t *newAddr = (block_t *)malloc(sizeof(block_t));
+        block_t *tmp;
+
+        *len += 1;
+        tmp = head;
     
         while(tmp -> next != NULL){
     
@@ -290,6 +310,17 @@ void addFoods() {
     
 }
 
+void showScore(const int score) {
+
+    move(windowMax_Y + 1, windowMin_X + (WIDTH - 10) / 2);
+    printw("score : %d", score);
+
+}
+
+void updateScore(int *score) {
+    (*score)++;
+}
+
 void shiftBlocks(block_t *head) {
 
     if(head -> next != NULL) {
@@ -320,9 +351,19 @@ void addchXCenter(char *str, int y, int start, int len) {
 
 }
 
-void addchYCenter(char *str, int x, int start, int len) {
-    
-        move(start + (len - (int)strlen(str)) / 2, x);
-        addstr(str);
-    
-    }
+bool keysAreRev(const int key1, const int key2) {
+
+    if(key1 == KEY_UP && key2 == KEY_DOWN)
+        return true;
+
+    if(key1 == KEY_DOWN && key2 == KEY_UP)
+        return true;
+
+    if(key1 == KEY_LEFT && key2 == KEY_RIGHT)
+        return true;
+
+    if(key1 == KEY_RIGHT && key2 == KEY_LEFT)
+        return true;
+
+    return false;
+}

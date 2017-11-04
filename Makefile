@@ -1,8 +1,8 @@
 snake : functions.o main.o
-	gcc -lncurses -o $@ functions.o main.o
+	gcc -Wall -lncurses -o $@ functions.o main.o
 
 function.o : functions.c
-	gcc -c $(CFLAGS) functions.c
+	gcc -Wall -c $(CFLAGS) functions.c
 
 main.o : main.c
-	gcc -c main.c
+	gcc -Wall -c main.c

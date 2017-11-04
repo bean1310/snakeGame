@@ -6,7 +6,7 @@
 #include <ncurses.h>
 #include <time.h>
 #include <stdbool.h>
-
+ 
 #define GAME_NAME "Snake Game"
 
 #define UP      0
@@ -16,6 +16,10 @@
 
 #define WIDTH 80
 #define HEIGHT 40
+#define MARGIN_X 10
+#define MARGIN_Y 5
+
+#define loop(num) for(int qazwsx = 0; qazwsx < num; qazwsx++)
 
 typedef struct blockData{
     int x;
@@ -23,20 +27,10 @@ typedef struct blockData{
     struct blockData *next;
 } block_t;
 
-extern block_t *snake;
+block_t *snake;
 
-extern int snakelen;
-
-extern int food_X;
-extern int food_Y;
-
-extern int windowMin_X;
-extern int windowMax_X;
-extern int windowMin_Y;
-extern int windowMax_Y;
-
-extern int key;
-extern int oldKey;
+int key;
+int oldKey;
 
 /* 関数一覧 */
 void initGameScreen();
@@ -44,11 +38,13 @@ void initGameConfig();
 
 bool crawl(int udlr);
 
-void addBlock();
+void addBlock(block_t *head, int *len);
 void addFoods();
 bool pauseGame();
+void showScore(const int score);
+void updateScore(int *score);
 void shiftBlocks(block_t *head);
 void killSnake(block_t *);
 
 void addchXCenter(char *str, int y, int start, int len);
-void addchYCenter(char *str, int x, int start, int len);
+bool keysAreRev(const int key1, const int key2);
