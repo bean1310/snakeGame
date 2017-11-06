@@ -14,10 +14,8 @@
 #define LEFT    2
 #define RIGHT   3
 
-#define WIDTH    100
-#define HEIGHT   50
-#define MARGIN_X 10
-#define MARGIN_Y  5
+#define MARGIN_X 5
+#define MARGIN_Y 5
 
 #define loop(num) for(int qazwsx = 0; qazwsx < num; qazwsx++)
 

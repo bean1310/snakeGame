@@ -10,6 +10,9 @@ int food_Y;
 
 int score = 0;
 
+int width;
+int height;
+
 /* 
  *
  * ゲーム画面の描画 (移植しやすい)
@@ -30,23 +33,33 @@ void initGameScreen() {
     noecho();
     keypad(stdscr,TRUE);
 
-    windowMin_X = (COLS - WIDTH) / 2;
-    windowMax_X = WIDTH + windowMin_X - 1;
-    windowMin_Y = (LINES - HEIGHT) / 2;
-    windowMax_Y = HEIGHT + windowMin_Y - 1;
+    width = COLS - 10;
+    height = LINES - 10;
+
+    if(width < MARGIN_X * 1.5 || height < MARGIN_Y * 1.5) {
+
+        perror("画面サイズが小さすぎます");
+
+        exit(EXIT_FAILURE);
+    }
+
+    windowMin_X = (COLS - width) / 2;
+    windowMax_X = width + windowMin_X - 1;
+    windowMin_Y = (LINES - height) / 2;
+    windowMax_Y = height + windowMin_Y - 1;
 
     refresh();
 
-    mainWin_Addr = newwin(HEIGHT, WIDTH, windowMin_Y, windowMin_X);
+    mainWin_Addr = newwin(height, width, windowMin_Y, windowMin_X);
     box(mainWin_Addr, 0 , 0);
     wrefresh(mainWin_Addr);
 
-    titleWin_Addr = newwin(3, WIDTH, windowMin_Y - 2, windowMin_X);
+    titleWin_Addr = newwin(3, width, windowMin_Y - 2, windowMin_X);
     box(titleWin_Addr, 0 , 0);
-    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, WIDTH);
+    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, width);
     wrefresh(titleWin_Addr);
 
-    scoreWin_Addr = newwin(3, WIDTH, windowMax_Y, windowMin_X);
+    scoreWin_Addr = newwin(3, width, windowMax_Y, windowMin_X);
     box(scoreWin_Addr, 0 , 0);
     showScore(score);
     wrefresh(scoreWin_Addr); 
@@ -64,8 +77,8 @@ void initGameConfig(){
 
     snake = (block_t *)malloc(sizeof(block_t));
 
-    snake -> x = rand() % (WIDTH - MARGIN_X * 2) + windowMin_X + MARGIN_X;
-    snake -> y = rand() % (HEIGHT - MARGIN_Y * 2) + windowMin_Y + MARGIN_Y;
+    snake -> x = rand() % (width - MARGIN_X * 2) + windowMin_X + MARGIN_X;
+    snake -> y = rand() % (height - MARGIN_Y * 2) + windowMin_Y + MARGIN_Y;
     snake -> next = NULL;
 
     timeout(200);
@@ -197,17 +210,17 @@ bool pauseGame() {
     int tmp, oldTmp;
     int y;
 
-    addchXCenter("          ", windowMin_Y - 1, windowMin_X, WIDTH);
-    addchXCenter(title, windowMin_Y - 1, windowMin_X, WIDTH);
+    addchXCenter("          ", windowMin_Y - 1, windowMin_X, width);
+    addchXCenter(title, windowMin_Y - 1, windowMin_X, width);
 
     move(food_Y, food_X);
     cpyKey = *unctrl(inch());
     addch(' ');
 
-    addchXCenter("[ ] Start", (windowMin_Y + windowMax_Y) / 2, windowMin_X, WIDTH);
-    addchXCenter("[ ] Exit ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, WIDTH);
+    addchXCenter("[ ] Start", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
+    addchXCenter("[ ] Exit ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
 
-    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (WIDTH - 9) / 2 + 1);
+    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
     addch('*');
 
     refresh();
@@ -219,17 +232,17 @@ bool pauseGame() {
             switch(tmp) {
 
                 case KEY_UP : 
-                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
                     addch(' ');
-                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
                     addch('*');
                     oldTmp = tmp;
                     break;
 
                 case KEY_DOWN :
-                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
                     addch(' ');
-                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (WIDTH - 9) / 2 + 1);
+                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
                     addch('*');
                     oldTmp = tmp;
                     break;
@@ -240,15 +253,15 @@ bool pauseGame() {
 
         }else{
 
-            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, WIDTH);
-            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, WIDTH);
+            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
+            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
 
             break;
         }
 
     }
 
-    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, WIDTH);
+    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, width);
 
     move(food_Y, food_X);
     addch(cpyKey);
@@ -264,7 +277,7 @@ bool pauseGame() {
 
 void gameOverScreen() {
 
-    addchXCenter("-- Game Over --", (windowMin_Y + windowMax_Y) / 4, windowMin_X, WIDTH);
+    addchXCenter("-- Game Over --", windowMin_Y + height / 10, windowMin_X, width);
     
     refresh();
     sleep(2);
@@ -298,8 +311,8 @@ void addFoods() {
     
     do{
 
-        food_X = rand() % (WIDTH - 2) + 1 + windowMin_X;
-        food_Y = rand() % (HEIGHT - 2) + 1 + windowMin_Y;
+        food_X = rand() % (width - 2) + 1 + windowMin_X;
+        food_Y = rand() % (height - 2) + 1 + windowMin_Y;
 
     }while(isBody(snake, food_X, food_Y) == true);
     
@@ -317,7 +330,7 @@ void addFoods() {
 
 void showScore(const int score) {
 
-    move(windowMax_Y + 1, windowMin_X + (WIDTH - 10) / 2);
+    move(windowMax_Y + 1, windowMin_X + (width - 10) / 2);
     printw("score : %d", score);
 
 }
