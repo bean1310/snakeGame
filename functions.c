@@ -227,10 +227,10 @@ bool pauseGame() {
 
     while(1) {
         tmp = getch();
-        if(tmp != KEY_RIGHT) {
+        if(tmp != KEY_RIGHT && tmp != 'd') {
 
             switch(tmp) {
-
+                case 'w' : /* KEY_UPと同じ処理 */
                 case KEY_UP : 
                     move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
                     addch(' ');
@@ -239,6 +239,7 @@ bool pauseGame() {
                     oldTmp = tmp;
                     break;
 
+                case 's' : /* KEY_DOWNと同じ処理 */
                 case KEY_DOWN :
                     move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
                     addch(' ');
@@ -268,7 +269,7 @@ bool pauseGame() {
 
     key = oldKey;
 
-    if(oldTmp == KEY_DOWN){
+    if(oldTmp == KEY_DOWN || oldTmp == 's'){
         return true;
     }
 
