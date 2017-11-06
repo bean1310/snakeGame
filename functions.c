@@ -262,6 +262,15 @@ bool pauseGame() {
     return false;
 }
 
+void gameOverScreen() {
+
+    addchXCenter("-- Game Over --", (windowMin_Y + windowMax_Y) / 4, windowMin_X, WIDTH);
+    
+    refresh();
+    sleep(2);
+
+}
+
 void addBlock(block_t *head, int *len) {
     
         block_t *newAddr = (block_t *)malloc(sizeof(block_t));

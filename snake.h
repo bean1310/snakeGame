@@ -6,7 +6,7 @@
 #include <ncurses.h>
 #include <time.h>
 #include <stdbool.h>
- 
+
 #define GAME_NAME "Snake Game"
 
 #define UP      0
@@ -14,10 +14,10 @@
 #define LEFT    2
 #define RIGHT   3
 
-#define WIDTH 80
-#define HEIGHT 40
+#define WIDTH    100
+#define HEIGHT   50
 #define MARGIN_X 10
-#define MARGIN_Y 5
+#define MARGIN_Y  5
 
 #define loop(num) for(int qazwsx = 0; qazwsx < num; qazwsx++)
 
@@ -27,6 +27,7 @@ typedef struct blockData{
     struct blockData *next;
 } block_t;
 
+/* 複数のファイルで使う変数 */
 block_t *snake;
 
 int key;
@@ -41,6 +42,8 @@ bool crawl(int udlr);
 void addBlock(block_t *head, int *len);
 void addFoods();
 bool pauseGame();
+void gameOverScreen();
+
 void showScore(const int score);
 void updateScore(int *score);
 void shiftBlocks(block_t *head);

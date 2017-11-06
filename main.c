@@ -34,6 +34,12 @@ int main(void) {
         }
     }
 
+    if (gameOver) {
+
+        gameOverScreen();
+
+    }
+
     killSnake(snake);
 
     endwin();
