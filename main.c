@@ -10,10 +10,15 @@ int main(void) {
 
     key = ERR;
     oldKey = KEY_DOWN;
+
     while(gameOver == false && stopGame == false) {
+
         if(key == ERR || keysAreRev(key, oldKey) == true) {
+
             key = oldKey;
+
         }
+        
         switch (key) {
             case 'w' : /* 上キーと同じ処理 */
             case KEY_UP : gameOver = crawl(UP);    break;
@@ -34,7 +39,7 @@ int main(void) {
         }
     }
 
-    if (gameOver) {
+    if(gameOver) {
 
         gameOverScreen();
 
