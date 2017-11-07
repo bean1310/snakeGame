@@ -185,6 +185,8 @@ bool crawl(int udlr) {
 
         }
 
+        move(block -> y, block -> x);
+
         if(block == snake){
             addch(headchar);
         }else{
