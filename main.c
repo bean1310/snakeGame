@@ -1,3 +1,10 @@
+/*
+ *
+ * [snake Game]
+ *
+ */
+
+
 #include "snake.h"
  
 int main(void) {
@@ -10,7 +17,7 @@ int main(void) {
 
     key = ERR;
     oldKey = KEY_DOWN;
-
+    
     while(gameOver == false && stopGame == false) {
 
         if(key == ERR || keysAreRev(key, oldKey) == true) {
