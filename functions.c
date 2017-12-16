@@ -101,7 +101,7 @@ void initGameConfig(){
  *
  */
 
-void gameStartScreen() {
+bool gameStartScreen() {
     
     int tmpKey, oldTmpKey;
     
@@ -158,6 +158,10 @@ void gameStartScreen() {
             break;
         }
     }
+    
+    if(oldTmpKey == KEY_DOWN || oldTmpKey == 's') return true;
+    
+    return false;
     
 }
 
@@ -351,14 +355,16 @@ bool pauseGame() {
                     oldTmp = tmp;
                     break;
 
-                default : break;
+                default :
+                    tmp = oldTmp;
+                    break;
 
             }
 
         }else{
 
             //選択肢表示を消す
-            addchXCenter("           ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
+            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
             addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
 
             break;
