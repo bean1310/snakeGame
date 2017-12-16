@@ -15,6 +15,8 @@ int main(void) {
     initGameScreen();
     initGameConfig();
     
+    gameStartScreen();
+    
     key = ERR;
     oldKey = KEY_DOWN;
     

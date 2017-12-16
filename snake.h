@@ -35,6 +35,7 @@ int oldKey;
 /* 関数一覧 */
 void initGameScreen();
 void initGameConfig();
+void gameStartScreen();
 
 bool crawl(int udlr);
 

@@ -13,10 +13,12 @@ int score = 0;
 int width;
 int height;
 
+/* ---------------------------------------------------------------------------------- */
+
 /* 
  *
  * ゲーム画面の描画 (移植しやすい)
- * ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ * --------------------------
  * 定数WIDTHが横幅, HEIGHTが縦幅, GAME_NAMEがゲーム名入れるとそれに従ってウィンドウ作成
  * 
  */
@@ -66,10 +68,11 @@ void initGameScreen() {
     
 }
 
+
 /* 
  *
  * ゲームの設定(移植不可)
- * ^^^^^^^^^^^^^^^^^^^^^^^
+ * ------------------
  * 蛇の初期位置とキー入力待ち時間の初期設定を行う.その後food()関数で食べ物設置
  * 
  */
@@ -87,10 +90,81 @@ void initGameConfig(){
 
 }
 
+
+/*
+ *
+ * ゲームスタート画面を出力する関数
+ * ---------------------------
+ * mainWindow中央に開始か終了の選択肢を提示.
+ * また上(w)下(s)キーで'*'を選択肢の"[ ]"内どちらかに表示.
+ * ちなみにpause関数のコピー
+ *
+ */
+
+void gameStartScreen() {
+    
+    int tmpKey, oldTmpKey;
+    
+    /* 選択肢の表示 */
+    addchXCenter("[ ] Start", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
+    addchXCenter("[ ] Exit ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
+    
+    /* 選択している方を示すための'*'を表示. デフォルトはStart側 */
+    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
+    addch('*');
+    
+    /* 画面の再描画 */
+    refresh();
+    
+    while(1) {
+        
+        tmpKey = getch();
+        
+        /* 決定キーが押されるまでループ */
+        if(tmpKey != KEY_RIGHT && tmpKey != 'd') {
+            
+            switch(tmpKey) {
+                    
+                case 'w' : /* KEY_UPと同じ処理 */
+                case KEY_UP :
+                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
+                    addch(' ');
+                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
+                    addch('*');
+                    oldTmpKey = tmpKey;
+                    break;
+                    
+                case 's' : /* KEY_DOWNと同じ処理 */
+                case KEY_DOWN :
+                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
+                    addch(' ');
+                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
+                    addch('*');
+                    oldTmpKey = tmpKey;
+                    break;
+                    
+                default :
+                    tmpKey = oldTmpKey;
+                    break;
+                    
+            }
+            
+        }else{
+            
+            //選択肢表示を消す
+            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
+            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
+            
+            break;
+        }
+    }
+    
+}
+
 /* 
  * 
  * 蛇を操作するキーを押された時の処理(移植不可)
- * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ * ------------------------------------
  * ゲームの核になる関数. ヘビのhead以外のblockの座標ををその親blockの座標にシフトする.
  * 操作キーによりヘビのheadの次の座標を決定してheadのx, yに代入.
  * またそのx, yに食べ物があればヘビの体長を変更する.
@@ -218,7 +292,7 @@ bool crawl(int udlr) {
 /*  
  * 
  * pause画面を出力する関数
- * ^^^^^^^^^^^^^^^^^^^^^
+ * ---------------------
  * ゲームタイトルが書かれている部分を"pause"に変更し, mainWindow中央に再開か終了の選択肢を提示.
  * また上(w)下(s)キーで'*'を選択肢の"[ ]"内どちらかに表示.
  * 
@@ -284,7 +358,7 @@ bool pauseGame() {
         }else{
 
             //選択肢表示を消す
-            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
+            addchXCenter("           ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
             addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
 
             break;
