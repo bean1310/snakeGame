@@ -42,7 +42,9 @@ int main(void) {
             case KEY_RIGHT : gameOver = crawl(RIGHT); break;
                 
             case 'q' : /* 一時中断 */
-                stopGame = pauseGame();  break;
+                stopGame = pauseGame();
+                key = oldKey;
+                break;
                 
             default :
                 key = oldKey; break;
