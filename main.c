@@ -39,10 +39,11 @@ int main(void) {
             case 'd' : /* 右キーと同じ処理 */
             case KEY_RIGHT : gameOver = crawl(RIGHT); break;
                 
-                /* 一時中断 */
-            case 'q' : stopGame = pauseGame();  break;
+            case 'q' : /* 一時中断 */
+                stopGame = pauseGame();  break;
                 
-            default : break;
+            default :
+                key = oldKey; break;
         }
     }
     
