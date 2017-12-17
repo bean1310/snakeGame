@@ -1,6 +1,6 @@
 /*
  *
- * [snake Game]
+ * [snake Game] by BEAN
  *
  */
 
