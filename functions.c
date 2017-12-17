@@ -1,27 +1,21 @@
 #include "snake.h"
 
-int windowMin_X;
-int windowMax_X;
-int windowMin_Y;
-int windowMax_Y;
+static int windowMin_X;
+static int windowMax_X;
+static int windowMin_Y;
+static int windowMax_Y;
 
-int food_X;
-int food_Y;
+static int food_X;
+static int food_Y;
 
-int score = 0;
+static int score = 0;
 
-int width;
-int height;
+static int width;
+static int height;
 
-/* ---------------------------------------------------------------------------------- */
+block_t *snake = NULL;
 
-/* 
- *
- * ゲーム画面の描画 (移植しやすい)
- * --------------------------
- * 定数WIDTHが横幅, HEIGHTが縦幅, GAME_NAMEがゲーム名入れるとそれに従ってウィンドウ作成
- * 
- */
+
 void initGameScreen() {
 
     WINDOW *mainWin_Addr, *titleWin_Addr, *scoreWin_Addr;
@@ -68,14 +62,6 @@ void initGameScreen() {
     
 }
 
-
-/* 
- *
- * ゲームの設定(移植不可)
- * ------------------
- * 蛇の初期位置とキー入力待ち時間の初期設定を行う.その後food()関数で食べ物設置
- * 
- */
 void initGameConfig(){
 
     snake = (block_t *)malloc(sizeof(block_t));
@@ -89,17 +75,6 @@ void initGameConfig(){
     addFoods();
 
 }
-
-
-/*
- *
- * ゲームスタート画面を出力する関数
- * ---------------------------
- * mainWindow中央に開始か終了の選択肢を提示.
- * また上(w)下(s)キーで'*'を選択肢の"[ ]"内どちらかに表示.
- * ちなみにpause関数のコピー
- *
- */
 
 bool gameStartScreen() {
     
@@ -164,17 +139,6 @@ bool gameStartScreen() {
     return false;
     
 }
-
-/* 
- * 
- * 蛇を操作するキーを押された時の処理(移植不可)
- * ------------------------------------
- * ゲームの核になる関数. ヘビのhead以外のblockの座標ををその親blockの座標にシフトする.
- * 操作キーによりヘビのheadの次の座標を決定してheadのx, yに代入.
- * またそのx, yに食べ物があればヘビの体長を変更する.
- * 座標に記録が終わってからヘビを描画.
- * 
- */
 
 bool crawl(int udlr) {
 
@@ -293,15 +257,6 @@ bool crawl(int udlr) {
 
 }
 
-/*  
- * 
- * pause画面を出力する関数
- * ---------------------
- * ゲームタイトルが書かれている部分を"pause"に変更し, mainWindow中央に再開か終了の選択肢を提示.
- * また上(w)下(s)キーで'*'を選択肢の"[ ]"内どちらかに表示.
- * 
- */
-
 bool pauseGame() {
 
     char title[] = "pause";
@@ -385,7 +340,7 @@ bool pauseGame() {
     return false;
 }
 
-/* GameOver画面を出力する関数 */
+
 void gameOverScreen() {
 
     addchXCenter("-- Game Over --", windowMin_Y + height / 10, windowMin_X, width);
@@ -395,7 +350,7 @@ void gameOverScreen() {
 
 }
 
-/* ヘビのbodyの最後尾に'x'を追加する関数 */
+
 void addBlock(block_t *head, int *len) {
     
         block_t *newAddr = (block_t *)malloc(sizeof(block_t));
@@ -413,8 +368,8 @@ void addBlock(block_t *head, int *len) {
         tmp -> next = newAddr;
     
 }
-    
-/* 食べ物を設置する関数 */
+
+
 void addFoods() {
     
     int foodType = rand() % 10;
@@ -444,7 +399,7 @@ void addFoods() {
     
 }
 
-/* スコアを表示する関数 */
+
 void showScore(const int score) {
 
     move(windowMax_Y + 1, windowMin_X + (width - 10) / 2);
@@ -452,12 +407,12 @@ void showScore(const int score) {
 
 }
 
-/* スコアをインクリメントする関数 */
+
 void updateScore(int *score) {
     (*score)++;
 }
 
-/* ヘビのブロックをその親ブロックの座標にシフトする関数 */
+
 void shiftBlocks(block_t *head) {
 
     if(head -> next != NULL) {
@@ -475,7 +430,7 @@ void shiftBlocks(block_t *head) {
 
 }
 
-/* 動的メモリ確保されたblock_t型要素の解放 */
+
 void killSnake(block_t *head){
 
     if(head -> next != NULL) {
@@ -488,16 +443,16 @@ void killSnake(block_t *head){
 
 }
 
-/* y座標におけるstartからlenの間の中心にstrを表示する関数 */
-void addchXCenter(char *str, int y, int start, int len) {
 
-    move(y, start + (len - (int)strlen(str)) / 2);
+void addchXCenter(char *str, int y, int start, int end) {
+
+    move(y, start + (end - (int)strlen(str)) / 2);
     addstr(str);
 
 }
 
-/* 上の後に下キーが押されたか, またその逆, 左の後に右が押されたか, またその逆を判定する関数 */
-bool keysAreRev(const int key1, const int key2) {
+
+bool areKeysRev(const int key1, const int key2) {
 
     if(key1 == KEY_UP && key2 == KEY_DOWN) return true;
 
@@ -510,7 +465,7 @@ bool keysAreRev(const int key1, const int key2) {
     return false;
 }
 
-/* (x, y)座標はheadから始まるヘビのbodyかどうか判定する関数 */
+
 bool isBody(block_t *head, int x, int y) {
 
     block_t *block = head;

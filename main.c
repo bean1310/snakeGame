@@ -7,6 +7,9 @@
 
 #include "snake.h"
 
+int key = ERR;
+int oldKey = KEY_DOWN;
+
 int main(void) {
     
     bool gameOver = false;
@@ -17,12 +20,9 @@ int main(void) {
     
     stopGame = gameStartScreen();
     
-    key = ERR;
-    oldKey = KEY_DOWN;
-    
     while(gameOver == false && stopGame == false) {
         
-        if(key == ERR || keysAreRev(key, oldKey) == true) {
+        if(key == ERR || areKeysRev(key, oldKey) == true) {
             
             key = oldKey;
             
