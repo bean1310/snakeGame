@@ -4,7 +4,7 @@
  *
  */
 
-
+#include <ncurses.h>
 #include "functions.h"
 
 int key = ERR;
