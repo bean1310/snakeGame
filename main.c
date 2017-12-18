@@ -5,7 +5,7 @@
  */
 
 
-#include "snake.h"
+#include "functions.h"
 
 int key = ERR;
 int oldKey = KEY_DOWN;

@@ -1,4 +1,4 @@
-#include "snake.h"
+#include "functions.h"
 
 static int windowMin_X;
 static int windowMax_X;
