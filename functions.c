@@ -109,9 +109,6 @@ static void addchXCenter(char *str, int y, int start, int len);
 static bool isBody(block_t *head, int x, int y);
 
 
-/* ----------------------- staticな関数定義ゾーン ----------------------- */
-
-
 void initGameScreen() {
 
     WINDOW *mainWin_Addr, *titleWin_Addr, *scoreWin_Addr;
@@ -445,6 +442,10 @@ void gameOverScreen() {
     sleep(2);
 
 }
+
+
+
+/* ----------------------- staticな関数定義ゾーン ----------------------- */
 
 
 void addBlock(block_t *head, int *len) {
