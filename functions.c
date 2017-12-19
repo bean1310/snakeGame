@@ -171,14 +171,37 @@ void initGameConfig(){
 
 bool gameStartScreen() {
     
-    int tmpKey, oldTmpKey;
+    int tmpKey, oldTmpKey, tmpNum = 0;
+    int option_Y = (windowMin_Y + windowMax_Y) / 2;
+    
+    char *gameLogo[] = {
+        "                       #                                               ",
+        " ####                  #               #####                           ",
+        "#   ##                 #              ##   ##                          ",
+        "#       # ###    ###   #  ##   ####  ##         ###   #### ###    #### ",
+        "##      ##  ##  #   #  # ##   ##  #  #         #   #  ##  ##  #  ##  # ",
+        "  ###   #    #      #  # #    #   ## #    ###      #  #   #   #  #   ##",
+        "    ##  #    #   ####  ###    ###### #      #   ####  #   #   #  ######",
+        "     #  #    #  #   #  # ##   #      ##     #  #   #  #   #   #  #     ",
+        "#    #  #    #  #  ##  #  #   ##      ##   ##  #  ##  #   #   #  ##    ",
+        " ####   #    #   ####  #   #   ####    #####    ####  #   #   #   #### "
+    };
+    
+    if(COLS >= (int)strlen(gameLogo[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+    
+        for(tmpNum = 1; tmpNum < 10; tmpNum++)
+            addchXCenter(gameLogo[tmpNum], windowMin_Y + tmpNum, windowMin_X, width);
+        
+        option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
+        
+    }
     
     /* 選択肢の表示 */
-    addchXCenter("[ ] Start", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
-    addchXCenter("[ ] Exit ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
+    addchXCenter("[ ] Start", option_Y, windowMin_X, width);
+    addchXCenter("[ ] Exit ", option_Y + 1, windowMin_X, width);
     
     /* 選択している方を示すための'*'を表示. デフォルトはStart側 */
-    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
+    move(option_Y, windowMin_X + (width - 9) / 2 + 1);
     addch('*');
     
     /* 画面の再描画 */
@@ -195,18 +218,18 @@ bool gameStartScreen() {
                     
                 case 'w' : /* KEY_UPと同じ処理 */
                 case KEY_UP :
-                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y + 1, windowMin_X + (width - 9) / 2 + 1);
                     addch(' ');
-                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y, windowMin_X + (width - 9) / 2 + 1);
                     addch('*');
                     oldTmpKey = tmpKey;
                     break;
                     
                 case 's' : /* KEY_DOWNと同じ処理 */
                 case KEY_DOWN :
-                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y, windowMin_X + (width - 9) / 2 + 1);
                     addch(' ');
-                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y + 1, windowMin_X + (width - 9) / 2 + 1);
                     addch('*');
                     oldTmpKey = tmpKey;
                     break;
@@ -219,9 +242,17 @@ bool gameStartScreen() {
             
         }else{
             
-            //選択肢表示を消す
-            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
-            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
+            /* 選択肢表示を消す */
+            addchXCenter("         ", option_Y, windowMin_X, width);
+            addchXCenter("         ", option_Y + 1, windowMin_X, width);
+            
+            /* SnakeGameのロゴを消す */
+            if(tmpNum != 0){
+                
+                loop(10)
+                    addchXCenter("                                                                       ", windowMin_Y + (tmpNum--), windowMin_X, width);
+                
+            }
             
             break;
         }

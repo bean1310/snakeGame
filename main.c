@@ -16,9 +16,10 @@ int main(void) {
     bool stopGame = false;
     
     initGameScreen();
-    initGameConfig();
     
     stopGame = gameStartScreen();
+    
+    initGameConfig();
     
     while(gameOver == false && stopGame == false) {
         
