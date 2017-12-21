@@ -8,20 +8,6 @@
 #ifndef _FUCTIONS_H__
 #define _FUCTIONS_H__
 
-#define GAME_NAME "Snake Game"
-
-#define UP      0
-#define DOWN    1
-#define LEFT    2
-#define RIGHT   3
-
-#define MARGIN_X 5
-#define MARGIN_Y 5
-
-#define loop(num) for(int qazwsx = 0; qazwsx < num; qazwsx++)
-
-
-
 /* ----------------------- 型定義ゾーン ----------------------- */
 
 

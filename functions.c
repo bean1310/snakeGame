@@ -12,12 +12,24 @@
 #include <stdlib.h>
 #include "functions.h"
 
+#define loop(num) for(int qazwsx = 0; qazwsx < num; qazwsx++)
+
+const char* const GAME_NAME = "Snake Game";
+
+const int UP = 0;
+const int DOWN = 1;
+const int LEFT = 2;
+const int RIGHT = 3;
+
+const int MARGIN_X = 5;
+const int MARGIN_Y = 5;
+
 /* *snakeの定義 */
 block_t *snake = NULL;
 
 
 
-/* ----------------------- staticな変数ゾーン ----------------------- */
+/* ----------------------- staticな変数宣言ゾーン ----------------------- */
 
 static int windowMin_X;
 static int windowMax_X;
@@ -34,7 +46,7 @@ static int height;
 
 
 
-/* ----------------------- staticな関数ゾーン ----------------------- */
+/* ----------------------- staticな関数宣言ゾーン ----------------------- */
 
 
 /*********************************************************
@@ -92,7 +104,7 @@ static void shiftBlocks(block_t *head);
  start -- 出力をしたいy座標におけるx座標のスタート
  end -- 出力をしたいy座標におけるx座標のエンド
  *********************************************************/
-static void addchXCenter(char *str, int y, int start, int len);
+static void addchXCenter(const char *str, int y, int start, int len);
 
 /*********************************************************
  isBody(block_t *head, int x, int y) -- (x, y)座標にヘビがいるかどうか判別
@@ -107,6 +119,10 @@ static void addchXCenter(char *str, int y, int start, int len);
  そうでないならfalseを返す.
  *********************************************************/
 static bool isBody(block_t *head, int x, int y);
+
+
+
+/* ----------------------- 関数定義ゾーン ----------------------- */
 
 
 void initGameScreen() {
@@ -572,7 +588,7 @@ void killSnake(block_t *head){
 }
 
 
-void addchXCenter(char *str, int y, int start, int end) {
+void addchXCenter(const char *str, int y, int start, int end) {
 
     move(y, start + (end - (int)strlen(str)) / 2);
     addstr(str);
