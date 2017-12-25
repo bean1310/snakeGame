@@ -8,6 +8,22 @@
 #ifndef _FUCTIONS_H__
 #define _FUCTIONS_H__
 
+
+
+/* ----------------------- 画面種類定義ゾーン ----------------------- */
+
+
+#define START_SCREEN    1
+#define GAMEOVER_SCREEN 2
+#define PAUSE_SCREEN    3
+
+#define UP      1
+#define DOWN    2
+#define LEFT    3
+#define RIGHT   4
+
+
+
 /* ----------------------- 型定義ゾーン ----------------------- */
 
 
@@ -54,16 +70,19 @@ extern void initGameScreen();
 extern void initGameConfig();
 
 /*********************************************************
- initgameStartScreen() -- ゲーム開始時の画面の出力
+ selectionScreen(const int scrType) -- ゲーム開始/停止/オーベー時の画面の出力
  
  説明: mainWindow中央に開始か終了の選択肢を提示.
       また上(w)下(s)キーで'*'を選択肢の"[ ]"内どちらかに表示.
-      表示が貧相すぎる問題.
-      ちなみにpause関数のコピー.
+ 
+ パラメータ: scrType -- 出力する画面の種類. functions.hで定義される.
+            START_SCREEN: ゲーム開始時の画面
+            GAMEOVER_SCREEN: ゲームオーバー時の画面
+            PAUSE_SCREEN: ゲーム開始時の画面
  
  戻り値: ゲームを終了させるならtrue.プレイするならfalse.
  *********************************************************/
-extern bool gameStartScreen();
+extern bool selectionScreen(const int scrType);
 
 /*********************************************************
  crawl(int udlr) -- 各キー操作の処理

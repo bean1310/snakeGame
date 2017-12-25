@@ -1,7 +1,7 @@
 # Snake Game
 
 ## ビルド
-git cloneしてmakeしたら"./snakegame"という実行ファイルができるはず.
+git cloneしてmakeしたら"./snakegame"という実行ファイルができるはず.
 
 ## 遊び方
 

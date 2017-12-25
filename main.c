@@ -16,9 +16,7 @@ int main(void) {
     bool stopGame = false;
     
     initGameScreen();
-    
-    stopGame = gameStartScreen();
-    
+    stopGame = selectionScreen(START_SCREEN);
     initGameConfig();
     
     while(gameOver == false && stopGame == false) {
@@ -43,7 +41,7 @@ int main(void) {
             case KEY_RIGHT : gameOver = crawl(RIGHT); break;
                 
             case 'q' : /* 一時中断 */
-                stopGame = pauseGame();
+                stopGame = selectionScreen(PAUSE_SCREEN);
                 key = oldKey;
                 break;
                 
@@ -54,7 +52,7 @@ int main(void) {
     
     if(gameOver) {
         
-        gameOverScreen();
+        selectionScreen(GAMEOVER_SCREEN);
         
     }
     

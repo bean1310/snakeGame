@@ -14,12 +14,7 @@
 
 #define loop(num) for(int qazwsx = 0; qazwsx < num; qazwsx++)
 
-const char* const GAME_NAME = "Snake Game";
-
-const int UP = 0;
-const int DOWN = 1;
-const int LEFT = 2;
-const int RIGHT = 3;
+const char* GAME_NAME = "Snake Game";
 
 const int MARGIN_X = 5;
 const int MARGIN_Y = 5;
@@ -185,12 +180,12 @@ void initGameConfig(){
 
 }
 
-bool gameStartScreen() {
+bool selectionScreen(const int scrType){
     
-    int tmpKey, oldTmpKey, tmpNum = 0;
+    int tmpKey, oldTmpKey, tmpNum, lines;
     int option_Y = (windowMin_Y + windowMax_Y) / 2;
     
-    char *gameLogo[] = {
+    const char *startScreen[] = {
         "                       #                                               ",
         " ####                  #               #####                           ",
         "#   ##                 #              ##   ##                          ",
@@ -199,16 +194,77 @@ bool gameStartScreen() {
         "  ###   #    #      #  # #    #   ## #    ###      #  #   #   #  #   ##",
         "    ##  #    #   ####  ###    ###### #      #   ####  #   #   #  ######",
         "     #  #    #  #   #  # ##   #      ##     #  #   #  #   #   #  #     ",
-        "#    #  #    #  #  ##  #  #   ##      ##   ##  #  ##  #   #   #  ##    ",
-        " ####   #    #   ####  #   #   ####    #####    ####  #   #   #   #### "
+        "#    #  #    #  #   #  #  #   ##      ##   ##  #   #  #   #   #  ##    ",
+        " ####   #    #   ### # #   #   ####    #####    ### # #   #   #   #### "
     };
     
-    if(COLS >= (int)strlen(gameLogo[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+    const char *gameoverScreen[] = {
+        "  #####                              #####                   ",
+        " ##   ##                            ##   ##                  ",
+        "##         ###   #### ###    ####  ##     ####   #  ####  # #",
+        "#         #   #  ##  ##  #  ##  #  #       # #   # ##  #  ## ",
+        "#    ###      #  #   #   #  #   ## #       # #  #  #   ## #  ",
+        "#      #   ####  #   #   #  ###### #       # ## #  ###### #  ",
+        "##     #  #   #  #   #   #  #      ##     ##  # #  #      #  ",
+        " ##   ##  #   #  #   #   #  ##      ##   ##   ##   ##     #  ",
+        "  #####    ### # #   #   #   ####    #####     #    ####  #  "
+    };
     
-        for(tmpNum = 1; tmpNum < 10; tmpNum++)
-            addchXCenter(gameLogo[tmpNum], windowMin_Y + tmpNum, windowMin_X, width);
+    const char *pauseScreen[] = {
+        "#####                              ",
+        "#   ##                             ",
+        "#    #   ###   #    #   ###   #### ",
+        "#   ##  #   #  #    #  #     ##  # ",
+        "#####       #  #    #  #     #   ##",
+        "#        ####  #    #   ##   ######",
+        "#       #   #  #    #     #  #     ",
+        "#       #  ##  #   ##  #  #  ##    ",
+        "#        ####   ### #  ###    #### "
+    };
+    
+    if(scrType == START_SCREEN) {
         
-        option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
+        lines = (int)(sizeof(startScreen) / sizeof(char *));
+        
+        if(COLS >= (int)strlen(startScreen[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+            
+            for(tmpNum = 0; tmpNum < lines; tmpNum++)
+                addchXCenter(startScreen[tmpNum], windowMin_Y + tmpNum + 1, windowMin_X, width);
+            
+            option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
+            
+        }
+        
+    }else if(scrType == GAMEOVER_SCREEN) {
+        
+        lines = (int)(sizeof(gameoverScreen) / sizeof(char *));
+        
+        if(COLS >= (int)strlen(gameoverScreen[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+            
+            for(tmpNum = 0; tmpNum < lines; tmpNum++)
+                addchXCenter(gameoverScreen[tmpNum], windowMin_Y + tmpNum + 1, windowMin_X, width);
+            
+            option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
+            
+        }
+        
+    }else if(scrType == PAUSE_SCREEN) {
+        
+        lines = (int)(sizeof(pauseScreen) / sizeof(char *));
+        
+        if(COLS >= (int)strlen(pauseScreen[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+            
+            for(tmpNum = 0; tmpNum < lines; tmpNum++)
+                addchXCenter(pauseScreen[tmpNum], windowMin_Y + tmpNum + 1, windowMin_X, width);
+            
+            option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
+            
+        }
+        
+    }else{
+        
+        perror("オプション画面でエラーが発生しました.");
+        return false;
         
     }
     
@@ -263,10 +319,8 @@ bool gameStartScreen() {
             addchXCenter("         ", option_Y + 1, windowMin_X, width);
             
             /* SnakeGameのロゴを消す */
-            if(tmpNum != 0){
-                
-                loop(10)
-                    addchXCenter("                                                                       ", windowMin_Y + (tmpNum--), windowMin_X, width);
+            while(tmpNum--){
+                addchXCenter("                                                                       ", windowMin_Y + tmpNum + 1, windowMin_X, width);
                 
             }
             
@@ -277,6 +331,8 @@ bool gameStartScreen() {
     if(oldTmpKey == KEY_DOWN || oldTmpKey == 's') return true;
     
     return false;
+    
+    
     
 }
 
@@ -394,99 +450,6 @@ bool crawl(int udlr) {
     }
 
     return gameOver;
-
-}
-
-bool pauseGame() {
-
-    char title[] = "pause";
-    char cpyKey;
-    int tmp, oldTmp;
-
-    //GameTitleを一旦隠す
-    addchXCenter("          ", windowMin_Y - 1, windowMin_X, width);
-    addchXCenter(title, windowMin_Y - 1, windowMin_X, width);
-
-    //foodを一旦隠す
-    move(food_Y, food_X);
-    cpyKey = *unctrl(inch());
-    addch(' ');
-
-    //選択肢の提示
-    addchXCenter("[ ] Start", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
-    addchXCenter("[ ] Exit ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
-
-    //選択している方を示すための'*'を表示. デフォルトはStart側
-    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
-    addch('*');
-
-    //画面の再描画
-    refresh();
-
-    while(1) {
-
-        tmp = getch();
-
-        //決定キーが押されるまでループ
-        if(tmp != KEY_RIGHT && tmp != 'd') {
-
-            switch(tmp) {
-
-                case 'w' : /* KEY_UPと同じ処理 */
-                case KEY_UP : 
-                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
-                    addch(' ');
-                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
-                    addch('*');
-                    oldTmp = tmp;
-                    break;
-
-                case 's' : /* KEY_DOWNと同じ処理 */
-                case KEY_DOWN :
-                    move((windowMin_Y + windowMax_Y) / 2, windowMin_X + (width - 9) / 2 + 1);
-                    addch(' ');
-                    move((windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X + (width - 9) / 2 + 1);
-                    addch('*');
-                    oldTmp = tmp;
-                    break;
-
-                default :
-                    tmp = oldTmp;
-                    break;
-
-            }
-
-        }else{
-
-            //選択肢表示を消す
-            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2, windowMin_X, width);
-            addchXCenter("         ", (windowMin_Y + windowMax_Y) / 2 + 1, windowMin_X, width);
-
-            break;
-        }
-
-    }
-
-    //GameTitle再描画
-    addchXCenter(GAME_NAME, windowMin_Y - 1, windowMin_X, width);
-
-    //食べ物再描画
-    move(food_Y, food_X);
-    addch(cpyKey);
-
-    //最後に押されたキーを元にreturn値を決定
-    if(oldTmp == KEY_DOWN || oldTmp == 's') return true;
-
-    return false;
-}
-
-
-void gameOverScreen() {
-
-    addchXCenter("-- Game Over --", windowMin_Y + height / 10, windowMin_X, width);
-    
-    refresh();
-    sleep(2);
 
 }
 
