@@ -58,5 +58,6 @@ dkms.conf
 # Xcode and macOS
 .DS_Store
 *.xcodeproj
+*.vscode
 # End of https://www.gitignore.io/api/c
 snakegame
