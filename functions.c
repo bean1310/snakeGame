@@ -328,11 +328,11 @@ bool selectionScreen(const int scrType){
         }
     }
     
+    /* ゲーム終了ならtrue */
     if(oldTmpKey == KEY_DOWN || oldTmpKey == 's') return true;
     
+    /* ゲーム続行ならfalse */
     return false;
-    
-    
     
 }
 

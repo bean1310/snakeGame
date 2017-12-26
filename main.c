@@ -48,12 +48,19 @@ int main(void) {
             default :
                 key = oldKey; break;
         }
-    }
     
-    if(gameOver) {
+        if(gameOver) {
+            
+            if(!selectionScreen(GAMEOVER_SCREEN)) {
+
+                gameOver = false;
+                killSnake(snake);
+                initGameConfig();
+
+            }
         
-        selectionScreen(GAMEOVER_SCREEN);
-        
+        }
+
     }
     
     killSnake(snake);
