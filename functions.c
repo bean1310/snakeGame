@@ -184,6 +184,8 @@ bool selectionScreen(const int scrType){
     
     int tmpKey, oldTmpKey, tmpNum, lines;
     int option_Y = (windowMin_Y + windowMax_Y) / 2;
+    char startText[12];
+    char exitText[12];
     
     const char *startScreen[] = {
         "                       #                                               ",
@@ -234,6 +236,9 @@ bool selectionScreen(const int scrType){
             option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
             
         }
+
+        strcpy(startText, "[ ] Start");
+        strcpy(exitText, "[ ] Exit ");
         
     }else if(scrType == GAMEOVER_SCREEN) {
         
@@ -247,6 +252,9 @@ bool selectionScreen(const int scrType){
             option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
             
         }
+
+        strcpy(startText, "[ ] ReStart");
+        strcpy(exitText, "[ ] Exit   ");
         
     }else if(scrType == PAUSE_SCREEN) {
         
@@ -260,6 +268,9 @@ bool selectionScreen(const int scrType){
             option_Y = ((windowMin_Y + windowMax_Y) / 2 + windowMax_Y) / 2;
             
         }
+
+        strcpy(startText, "[ ] ReStart");
+        strcpy(exitText, "[ ] Exit   ");
         
     }else{
         
@@ -269,11 +280,11 @@ bool selectionScreen(const int scrType){
     }
     
     /* 選択肢の表示 */
-    addchXCenter("[ ] Start", option_Y, windowMin_X, width);
-    addchXCenter("[ ] Exit ", option_Y + 1, windowMin_X, width);
+    addchXCenter(startText, option_Y, windowMin_X, width);
+    addchXCenter(exitText, option_Y + 1, windowMin_X, width);
     
     /* 選択している方を示すための'*'を表示. デフォルトはStart側 */
-    move(option_Y, windowMin_X + (width - 9) / 2 + 1);
+    move(option_Y, windowMin_X + ( width - (int)strlen(startText) ) / 2 + 1);
     addch('*');
     
     /* 画面の再描画 */
@@ -290,18 +301,18 @@ bool selectionScreen(const int scrType){
                     
                 case 'w' : /* KEY_UPと同じ処理 */
                 case KEY_UP :
-                    move(option_Y + 1, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y + 1, windowMin_X + ( width - (int)strlen(startText) ) / 2 + 1);
                     addch(' ');
-                    move(option_Y, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y, windowMin_X + ( width - (int)strlen(startText) ) / 2 + 1);
                     addch('*');
                     oldTmpKey = tmpKey;
                     break;
                     
                 case 's' : /* KEY_DOWNと同じ処理 */
                 case KEY_DOWN :
-                    move(option_Y, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y, windowMin_X + ( width - (int)strlen(startText) ) / 2 + 1);
                     addch(' ');
-                    move(option_Y + 1, windowMin_X + (width - 9) / 2 + 1);
+                    move(option_Y + 1, windowMin_X + ( width - (int)strlen(startText) ) / 2 + 1);
                     addch('*');
                     oldTmpKey = tmpKey;
                     break;
@@ -315,8 +326,17 @@ bool selectionScreen(const int scrType){
         }else{
             
             /* 選択肢表示を消す */
-            addchXCenter("         ", option_Y, windowMin_X, width);
-            addchXCenter("         ", option_Y + 1, windowMin_X, width);
+            if(scrType == START_SCREEN) {
+
+                addchXCenter("         ", option_Y, windowMin_X, width);
+                addchXCenter("         ", option_Y + 1, windowMin_X, width);
+
+            }else{
+
+                addchXCenter("           ", option_Y, windowMin_X, width);
+                addchXCenter("           ", option_Y + 1, windowMin_X, width);
+
+            }
             
             /* SnakeGameのロゴを消す */
             while(tmpNum--){
