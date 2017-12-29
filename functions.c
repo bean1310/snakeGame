@@ -182,7 +182,7 @@ void initGameConfig(){
 
 bool selectionScreen(const int scrType){
     
-    int tmpKey, oldTmpKey, tmpNum, lines;
+    int tmpKey, oldTmpKey, tmpNum, lines = 0;
     int option_Y = (windowMin_Y + windowMax_Y) / 2;
     char startText[12];
     char exitText[12];
@@ -226,9 +226,9 @@ bool selectionScreen(const int scrType){
     
     if(scrType == START_SCREEN) {
         
-        lines = (int)(sizeof(startScreen) / sizeof(char *));
-        
         if(COLS >= (int)strlen(startScreen[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+
+            lines = (int)(sizeof(startScreen) / sizeof(char *));
             
             for(tmpNum = 0; tmpNum < lines; tmpNum++)
                 addchXCenter(startScreen[tmpNum], windowMin_Y + tmpNum + 1, windowMin_X, width);
@@ -242,9 +242,10 @@ bool selectionScreen(const int scrType){
         
     }else if(scrType == GAMEOVER_SCREEN) {
         
-        lines = (int)(sizeof(gameoverScreen) / sizeof(char *));
         
         if(COLS >= (int)strlen(gameoverScreen[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+
+            lines = (int)(sizeof(gameoverScreen) / sizeof(char *));
             
             for(tmpNum = 0; tmpNum < lines; tmpNum++)
                 addchXCenter(gameoverScreen[tmpNum], windowMin_Y + tmpNum + 1, windowMin_X, width);
@@ -258,9 +259,9 @@ bool selectionScreen(const int scrType){
         
     }else if(scrType == PAUSE_SCREEN) {
         
-        lines = (int)(sizeof(pauseScreen) / sizeof(char *));
-        
         if(COLS >= (int)strlen(pauseScreen[0]) + MARGIN_X * 2 + 2 && LINES > 24){
+
+            lines = (int)(sizeof(pauseScreen) / sizeof(char *));
             
             for(tmpNum = 0; tmpNum < lines; tmpNum++)
                 addchXCenter(pauseScreen[tmpNum], windowMin_Y + tmpNum + 1, windowMin_X, width);
@@ -325,27 +326,31 @@ bool selectionScreen(const int scrType){
             
         }else{
             
-            /* 選択肢表示を消す */
-            if(scrType == START_SCREEN) {
-
-                addchXCenter("         ", option_Y, windowMin_X, width);
-                addchXCenter("         ", option_Y + 1, windowMin_X, width);
-
-            }else{
-
-                addchXCenter("           ", option_Y, windowMin_X, width);
-                addchXCenter("           ", option_Y + 1, windowMin_X, width);
-
-            }
-            
-            /* SnakeGameのロゴを消す */
-            while(tmpNum--){
-                addchXCenter("                                                                       ", windowMin_Y + tmpNum + 1, windowMin_X, width);
-                
-            }
-            
             break;
+
         }
+
+    }
+
+    /* 選択肢表示を消す */
+    if(scrType == START_SCREEN) {
+
+        addchXCenter("         ", option_Y, windowMin_X, width);
+        addchXCenter("         ", option_Y + 1, windowMin_X, width);
+
+    }else{
+
+        addchXCenter("           ", option_Y, windowMin_X, width);
+        addchXCenter("           ", option_Y + 1, windowMin_X, width);
+
+    }
+            
+    /* ロゴ表示された時SnakeGameのロゴを消す */
+    if(lines != 0){
+
+        while(tmpNum--)
+            addchXCenter("                                                                       ", windowMin_Y + tmpNum + 1, windowMin_X, width);
+        
     }
     
     /* ゲーム終了ならtrue */
