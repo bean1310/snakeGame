@@ -605,13 +605,13 @@ void addchXCenter(const char *str, int y, int start, int end) {
 
 bool areKeysRev(const int key1, const int key2) {
 
-    if(key1 == KEY_UP && key2 == KEY_DOWN) return true;
+    if( ( ( key1 == KEY_UP) || ( key1 == 'w' ) ) && ( ( key2 == KEY_DOWN) || ( key2 == 's' ) )) return true;
 
-    if(key1 == KEY_DOWN && key2 == KEY_UP) return true;
+    if( ( ( key2 == KEY_UP) || ( key2 == 'w' ) ) && ( ( key1 == KEY_DOWN) || ( key1 == 's' ) )) return true;
 
-    if(key1 == KEY_LEFT && key2 == KEY_RIGHT) return true;
+    if( ( ( key1 == KEY_LEFT) || ( key1 == 'a' ) ) && ( ( key2 == KEY_RIGHT) || ( key2 == 'd' ) )) return true;
 
-    if(key1 == KEY_RIGHT && key2 == KEY_LEFT) return true;
+    if( ( ( key2 == KEY_LEFT) || ( key2 == 'a' ) ) && ( ( key1 == KEY_RIGHT) || ( key1 == 'd' ) )) return true;
 
     return false;
 }
