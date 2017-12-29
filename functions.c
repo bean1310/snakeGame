@@ -408,7 +408,7 @@ bool crawl(int udlr) {
             switch(udlr) {
                 
                 case UP     : block -> y -= 1; headchar = ACS_UARROW; break;
-                case DOWN   : block -> y += 1; headchar = ACS_DARROW; break;
+                case DOWN   : block -> y += 1; headchar = 'v'; break;
                 case LEFT   : block -> x -= 1; headchar = ACS_LARROW; break;
                 case RIGHT  : block -> x += 1; headchar = ACS_RARROW; break;
 
