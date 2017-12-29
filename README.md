@@ -1,7 +1,13 @@
 # Snake Game
 
-## ビルド
-git cloneしてmakeしたら"./snakegame"という実行ファイルができるはず.
+## Build
+```git clone https://github.com/bean1310/snakeGame.git```
+
+して
+
+```make```
+
+すると./snakegameという実行ファイルができる.
 
 ## 遊び方
 
@@ -17,6 +23,11 @@ git cloneしてmakeしたら"./snakegame"という実行ファイルができる
 * m : この食べ物を食べるとヘビの体長が現在の体長の2倍になります.
 * d : この食べ物を食べるとヘビの体長が現在の体長の半分になります.
 
-## branches
+## Branches
 開発はdevelopブランチで行います.
 機能が追加されちゃんと動くものはmasterにマージします.
+
+## 環境
+READMEを描いてる時にの動作確認環境は
+- Apple MacBook Pro (Retina, 13-inch, Early 2015): macOS High Sierra 10.13.2
+- DELL Latitude E6230: Ubuntu 16.04 LTS
