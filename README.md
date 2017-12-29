@@ -27,7 +27,7 @@
 開発はdevelopブランチで行います.
 機能が追加されちゃんと動くものはmasterにマージします.
 
-## 環境
-READMEを描いてる時にの動作確認環境は
+## 環境
+READMEを描いてる時にの動作確認環境は
 - Apple MacBook Pro (Retina, 13-inch, Early 2015): macOS High Sierra 10.13.2
 - DELL Latitude E6230: Ubuntu 16.04 LTS
