@@ -34,7 +34,13 @@ typedef struct blockData{
     struct blockData *next;
 } block_t;
 
+typedef struct{
 
+    char type;
+    int x;
+    int y;
+
+} foodCdnt_t;
 
 /* ----------------------- 他ファイルから参照可能な変数ゾーン ----------------------- */
 

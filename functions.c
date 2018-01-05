@@ -31,13 +31,12 @@ static int windowMax_X;
 static int windowMin_Y;
 static int windowMax_Y;
 
-static int food_X;
-static int food_Y;
-
 static int score = 0;
 
 static int width;
 static int height;
+
+static foodCdnt_t foodCoordinate;
 
 
 
@@ -277,6 +276,9 @@ bool selectionScreen(const int scrType){
         case GAMEOVER_SCREEN: /* ゲームオーバーと一時停止では同じ選択肢を表示 */
         case PAUSE_SCREEN:
 
+            move(foodCoordinate.x, foodCoordinate.y);
+            addch(' ');
+
             addchXCenter("[ ] ReStart", option_Y, windowMin_X, width);
             addchXCenter("[ ] Exit   ", option_Y + 1, windowMin_X, width);
 
@@ -426,7 +428,6 @@ bool crawl(int udlr) {
                     loop(lentmp) {
                         addBlock(snake, &snakeLen);
                     }
-
                     addFoods();
                     score++;
                     showScore(score);
@@ -518,26 +519,28 @@ void addFoods() {
     
     do{
 
-        food_X = rand() % (width - 2) + 1 + windowMin_X;
-        food_Y = rand() % (height - 2) + 1 + windowMin_Y;
+        foodCoordinate.x = rand() % (width - 2) + 1 + windowMin_X;
+        foodCoordinate.y = rand() % (height - 2) + 1 + windowMin_Y;
 
-    }while(isBody(snake, food_X, food_Y) == true);  //ヘビの体上に座標が決まればもう一度ランダムに決定
+    }while(isBody(snake, foodCoordinate.x, foodCoordinate.y) == true);  //ヘビの体上に座標が決まればもう一度ランダムに決定
     
-    move(food_Y, food_X);
+    move(foodCoordinate.x, foodCoordinate.y);
     
     if(foodType < 6){
 
-        addch('n');
+        foodCoordinate.type = 'n';
 
     }else if(foodType < 8){
 
-        addch('m');
+        foodCoordinate.type = 'm';
 
     }else{
 
-        addch('d');
+        foodCoordinate.type = 'd';
 
     }
+
+    addch(foodCoordinate.type);
     
 }
 
