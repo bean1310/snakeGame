@@ -524,7 +524,7 @@ void addFoods() {
 
     }while(isBody(snake, foodCoordinate.x, foodCoordinate.y) == true);  //ヘビの体上に座標が決まればもう一度ランダムに決定
     
-    move(foodCoordinate.x, foodCoordinate.y);
+    move(foodCoordinate.y, foodCoordinate.x);
     
     if(foodType < 6){
 
