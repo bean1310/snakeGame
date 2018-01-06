@@ -55,6 +55,7 @@ int main(void) {
 
                 gameOver = false;
                 killSnake(snake);
+                initGameScreen();
                 initGameConfig();
 
             }
