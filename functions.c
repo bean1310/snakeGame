@@ -58,7 +58,7 @@ static void addBlock(block_t *head, int *len);
  
  説明: ゲーム画面内にランダムに食べ物を配置
  *********************************************************/
-static void addFoods();
+static void addFoods(foodCdnt_t *foodPointer);
 
 /*********************************************************
  showScore(const int score) -- スコアを表示する関数
@@ -166,7 +166,7 @@ void initGameConfig(){
 
     timeout(200);
 
-    addFoods();
+    addFoods(NULL);
 
 }
 
@@ -276,9 +276,11 @@ bool selectionScreen(const int scrType){
         case GAMEOVER_SCREEN: /* ゲームオーバーと一時停止では同じ選択肢を表示 */
         case PAUSE_SCREEN:
 
-            move(foodCoordinate.x, foodCoordinate.y);
+            /* foodを隠す */
+            move(foodCoordinate.y, foodCoordinate.x);
             addch(' ');
 
+            /* 選択肢の表示 */
             addchXCenter("[ ] ReStart", option_Y, windowMin_X, width);
             addchXCenter("[ ] Exit   ", option_Y + 1, windowMin_X, width);
 
@@ -367,6 +369,8 @@ bool selectionScreen(const int scrType){
     
     /* ゲーム終了ならtrueを返す */
     if(oldTmpKey == KEY_DOWN || oldTmpKey == 's') return true;
+
+    if(scrType == PAUSE_SCREEN) addFoods(&foodCoordinate);
     
     /* ゲーム続行ならfalseを返す */
     return false;
@@ -416,7 +420,7 @@ bool crawl(int udlr) {
                 case 'n' : 
                     /* 増やす */
                     addBlock(snake, &snakeLen);
-                    addFoods();
+                    addFoods(NULL);
                     score++;
                     showScore(score);
 
@@ -428,7 +432,7 @@ bool crawl(int udlr) {
                     loop(lentmp) {
                         addBlock(snake, &snakeLen);
                     }
-                    addFoods();
+                    addFoods(NULL);
                     score++;
                     showScore(score);
 
@@ -447,7 +451,7 @@ bool crawl(int udlr) {
                         snakeLen /= 2;
                     }
 
-                    addFoods();
+                    addFoods(NULL);
                     score++;
                     showScore(score);
 
@@ -513,33 +517,38 @@ void addBlock(block_t *head, int *len) {
 }
 
 
-void addFoods() {
+void addFoods(foodCdnt_t *foodPointer) {
     
     int foodType = rand() % 10;
+
+    if(foodPointer == NULL) {
     
-    do{
+        do{
 
-        foodCoordinate.x = rand() % (width - 2) + 1 + windowMin_X;
-        foodCoordinate.y = rand() % (height - 2) + 1 + windowMin_Y;
+            foodCoordinate.x = rand() % (width - 2) + 1 + windowMin_X;
+            foodCoordinate.y = rand() % (height - 2) + 1 + windowMin_Y;
 
-    }while(isBody(snake, foodCoordinate.x, foodCoordinate.y) == true);  //ヘビの体上に座標が決まればもう一度ランダムに決定
+        }while(isBody(snake, foodCoordinate.x, foodCoordinate.y) == true);  //ヘビの体上に座標が決まればもう一度ランダムに決定
     
-    move(foodCoordinate.y, foodCoordinate.x);
     
-    if(foodType < 6){
+    
+        if(foodType < 6){
 
-        foodCoordinate.type = 'n';
+            foodCoordinate.type = 'n';
 
-    }else if(foodType < 8){
+        }else if(foodType < 8){
 
-        foodCoordinate.type = 'm';
+            foodCoordinate.type = 'm';
 
-    }else{
+        }else{
 
-        foodCoordinate.type = 'd';
+            foodCoordinate.type = 'd';
+
+        }
 
     }
 
+    move(foodCoordinate.y, foodCoordinate.x);
     addch(foodCoordinate.type);
     
 }
