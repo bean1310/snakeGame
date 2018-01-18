@@ -32,6 +32,7 @@ static int windowMin_Y;
 static int windowMax_Y;
 
 static int score;
+static int snakeLen;
 
 static int width;
 static int height;
@@ -167,6 +168,7 @@ void initGameConfig(){
     snake -> next = NULL;
 
     score = 0;
+    snakeLen = 1;
 
     timeout(200);
 
@@ -381,7 +383,6 @@ bool selectionScreen(const int scrType){
 
 bool crawl(int udlr) {
 
-    static int snakeLen = 1;
     int lentmp;
     int headchar;
     bool gameOver = false;
