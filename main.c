@@ -15,9 +15,9 @@ int main(void) {
     bool gameOver = false;
     bool stopGame = false;
     
-    initGameScreen();
-    stopGame = selectionScreen(START_SCREEN);
     initGameConfig();
+    stopGame = selectionScreen(START_SCREEN);
+    addFoods(NULL);
     
     while(gameOver == false && stopGame == false) {
         
@@ -56,8 +56,7 @@ int main(void) {
                 gameOver = false;
                 killSnake(snake);
                 initGameConfig();
-                initGameScreen();
-
+                addFoods(NULL);
             }
         
         }

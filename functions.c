@@ -55,13 +55,6 @@ static foodCdnt_t foodCoordinate;
 static void addBlock(block_t *head, int *len);
 
 /*********************************************************
- addFoods() -- 食べ物を設置する関数
- 
- 説明: ゲーム画面内にランダムに食べ物を配置
- *********************************************************/
-static void addFoods(foodCdnt_t *foodPointer);
-
-/*********************************************************
  showScore(const int score) -- スコアを表示する関数
  
  説明: スコアを画面下部に表示させる関数
@@ -111,9 +104,14 @@ static bool isBody(block_t *head, int x, int y);
 /* ----------------------- 関数定義ゾーン ----------------------- */
 
 
-void initGameScreen() {
+void initGameConfig(){
 
     WINDOW *mainWin_Addr, *titleWin_Addr, *scoreWin_Addr;
+
+    snake = (block_t *)malloc(sizeof(block_t));
+
+    score = 0;
+    snakeLen = 1;
 
     srand((unsigned int)time(NULL)); 
 
@@ -123,6 +121,7 @@ void initGameScreen() {
     cbreak();
     noecho();
     keypad(stdscr,TRUE);
+    timeout(200);
 
     width = COLS - 10;
     height = LINES - 10;
@@ -139,6 +138,10 @@ void initGameScreen() {
     windowMin_Y = (LINES - height) / 2;
     windowMax_Y = height + windowMin_Y - 1;
 
+    snake -> x = rand() % (width - MARGIN_X * 2) + windowMin_X + MARGIN_X;
+    snake -> y = rand() % (height - MARGIN_Y * 2) + windowMin_Y + MARGIN_Y;
+    snake -> next = NULL;
+
     refresh();
 
     mainWin_Addr = newwin(height, width, windowMin_Y, windowMin_X);
@@ -154,23 +157,6 @@ void initGameScreen() {
     box(scoreWin_Addr, 0 , 0);
     showScore(score);
     wrefresh(scoreWin_Addr);
-
-    addFoods(NULL);
-    
-}
-
-void initGameConfig(){
-
-    snake = (block_t *)malloc(sizeof(block_t));
-
-    snake -> x = rand() % (width - MARGIN_X * 2) + windowMin_X + MARGIN_X;
-    snake -> y = rand() % (height - MARGIN_Y * 2) + windowMin_Y + MARGIN_Y;
-    snake -> next = NULL;
-
-    score = 0;
-    snakeLen = 1;
-
-    timeout(200);
 
 }
 
@@ -497,29 +483,6 @@ bool crawl(int udlr) {
 }
 
 
-
-/* ----------------------- staticな関数定義ゾーン ----------------------- */
-
-
-void addBlock(block_t *head, int *len) {
-    
-        block_t *newAddr = (block_t *)malloc(sizeof(block_t));
-        block_t *tmp;
-
-        *len += 1;
-        tmp = head;
-    
-        while(tmp -> next != NULL)
-            tmp = tmp -> next;
-    
-        newAddr -> next = NULL;
-        newAddr -> x = tmp -> x;
-        newAddr -> y = tmp -> y;
-        tmp -> next = newAddr;
-    
-}
-
-
 void addFoods(foodCdnt_t *foodPointer) {
     
     int foodType = rand() % 10;
@@ -556,6 +519,27 @@ void addFoods(foodCdnt_t *foodPointer) {
     
 }
 
+
+/* ----------------------- staticな関数定義ゾーン ----------------------- */
+
+
+void addBlock(block_t *head, int *len) {
+    
+        block_t *newAddr = (block_t *)malloc(sizeof(block_t));
+        block_t *tmp;
+
+        *len += 1;
+        tmp = head;
+    
+        while(tmp -> next != NULL)
+            tmp = tmp -> next;
+    
+        newAddr -> next = NULL;
+        newAddr -> x = tmp -> x;
+        newAddr -> y = tmp -> y;
+        tmp -> next = newAddr;
+    
+}
 
 void showScore(const int score) {
 

@@ -143,4 +143,11 @@ extern void killSnake(block_t *);
  *********************************************************/
 extern bool areKeysRev(const int key1, const int key2);
 
+/*********************************************************
+ addFoods() -- 食べ物を設置する関数
+ 
+ 説明: ゲーム画面内にランダムに食べ物を配置
+ *********************************************************/
+extern void addFoods(foodCdnt_t *foodPointer);
+
 #endif /* _FUCTIONS_H__ */
