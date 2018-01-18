@@ -31,7 +31,7 @@ static int windowMax_X;
 static int windowMin_Y;
 static int windowMax_Y;
 
-static int score = 0;
+static int score;
 
 static int width;
 static int height;
@@ -152,7 +152,9 @@ void initGameScreen() {
     scoreWin_Addr = newwin(3, width, windowMax_Y, windowMin_X);
     box(scoreWin_Addr, 0 , 0);
     showScore(score);
-    wrefresh(scoreWin_Addr); 
+    wrefresh(scoreWin_Addr);
+
+    addFoods(NULL);
     
 }
 
@@ -164,9 +166,9 @@ void initGameConfig(){
     snake -> y = rand() % (height - MARGIN_Y * 2) + windowMin_Y + MARGIN_Y;
     snake -> next = NULL;
 
-    timeout(200);
+    score = 0;
 
-    addFoods(NULL);
+    timeout(200);
 
 }
 
