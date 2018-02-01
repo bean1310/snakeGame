@@ -50,13 +50,19 @@ int main(void) {
         }
     
         if(gameOver) {
+
+            if(saveHighScore())
+                perror("Failed to save high score.\n");
+
+            killSnake(snake);
+                
+            initGameConfig();
             
             if(!selectionScreen(GAMEOVER_SCREEN)) {
 
                 gameOver = false;
-                killSnake(snake);
-                initGameConfig();
                 addFoods(NULL);
+
             }
         
         }
@@ -64,6 +70,8 @@ int main(void) {
     }
     
     killSnake(snake);
+    if(saveHighScore())
+        perror("Failed to save high score.\n");
     
     endwin();
     

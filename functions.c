@@ -24,7 +24,7 @@ block_t *snake = NULL;
 
 
 
-/* ----------------------- staticな変数宣言ゾーン ----------------------- */
+/* ----------------------- staticな変数ゾーン ----------------------- */
 
 static int windowMin_X;
 static int windowMax_X;
@@ -36,6 +36,10 @@ static int snakeLen;
 
 static int width;
 static int height;
+
+static const char* saveFileName = "./saves/score.dat";
+static int highScore;
+static int magicNum;
 
 static foodCdnt_t foodCoordinate;
 
@@ -61,7 +65,7 @@ static void addBlock(block_t *head, int *len);
  
  パラメータ: score -- スコアを格納している変数を指定.
  *********************************************************/
-static void showScore(const int score);
+static void showScore(const int score, bool highScoreFlag);
 
 /*********************************************************
  shiftBlocks(block_t *head) -- ヘビのブロックをその親ブロックの座標にシフトする関数
@@ -98,6 +102,12 @@ static void addchXCenter(const char *str, int y, int start, int len);
  そうでないならfalseを返す.
  *********************************************************/
 static bool isBody(block_t *head, int x, int y);
+
+static int getHighScore();
+
+static int mkMagicNum(const char* str);
+
+static void overWriteSpace(char *str, unsigned int len);
 
 
 
@@ -142,6 +152,8 @@ void initGameConfig(){
     snake -> y = rand() % (height - MARGIN_Y * 2) + windowMin_Y + MARGIN_Y;
     snake -> next = NULL;
 
+    magicNum = mkMagicNum(GAME_NAME);
+
     refresh();
 
     mainWin_Addr = newwin(height, width, windowMin_Y, windowMin_X);
@@ -155,7 +167,8 @@ void initGameConfig(){
 
     scoreWin_Addr = newwin(3, width, windowMax_Y, windowMin_X);
     box(scoreWin_Addr, 0 , 0);
-    showScore(score);
+    highScore = getHighScore();
+    showScore(highScore, true);
     wrefresh(scoreWin_Addr);
 
 }
@@ -348,6 +361,9 @@ bool selectionScreen(const int scrType){
 
     }
 
+    /* ハイスコア表示をスコアの表示に変更 */
+    showScore(score, false);
+
             
     /* ロゴ表示された時SnakeGameのロゴを消す */
     if(lines != 0){
@@ -411,7 +427,7 @@ bool crawl(int udlr) {
                     addBlock(snake, &snakeLen);
                     addFoods(NULL);
                     score++;
-                    showScore(score);
+                    showScore(score, false);
 
                     break;
 
@@ -423,7 +439,7 @@ bool crawl(int udlr) {
                     }
                     addFoods(NULL);
                     score++;
-                    showScore(score);
+                    showScore(score, false);
 
                     break;
 
@@ -442,7 +458,7 @@ bool crawl(int udlr) {
 
                     addFoods(NULL);
                     score++;
-                    showScore(score);
+                    showScore(score, false);
 
                     break;
 
@@ -519,6 +535,47 @@ void addFoods(foodCdnt_t *foodPointer) {
     
 }
 
+int saveHighScore() {
+    
+    FILE *fp;
+    int buffer[2];
+    int dataNum = 0;
+
+    /* バイナリで読み書きモード */
+    if((fp = fopen(saveFileName, "wb+")) == NULL) {
+        perror("Failed to open save file\n");
+        return 1;
+    }
+
+    dataNum = fread(&buffer[0], 4, 1, fp);
+
+    if(dataNum != 0) {
+
+        if(buffer[0] != magicNum) {
+            perror("Readed file is not save file of this game.\n");
+            fclose(fp);
+            return 1;
+        }
+    
+    /* saveファイルがなかった時 */
+    }else{
+        buffer[0] = magicNum;
+    }
+
+    /* データ書き込み */
+    buffer[1] = score >= highScore ? score : highScore;
+    if(fwrite(buffer, 4, 2, fp) != 2) {
+        perror("Failed to save data.\n");
+        fclose(fp);
+        return 1;
+    }
+
+    fclose(fp);
+
+    return 0;
+
+}
+
 
 /* ----------------------- staticな関数定義ゾーン ----------------------- */
 
@@ -541,10 +598,20 @@ void addBlock(block_t *head, int *len) {
     
 }
 
-void showScore(const int score) {
+void showScore(const int score, bool highScoreFlag) {
+
+    char spaceStr[width - 3];
+
+    overWriteSpace(spaceStr, width - 3);
+
+    move(windowMax_Y + 1, windowMin_X + 1);
+    addnstr(spaceStr, width - 3);
 
     move(windowMax_Y + 1, windowMin_X + (width - 10) / 2);
-    printw("score : %d", score);
+    if(highScoreFlag)
+        printw("High Score : %d", score);    
+    else
+        printw("Score : %d", score);
 
 }
 
@@ -618,5 +685,63 @@ bool isBody(block_t *head, int x, int y) {
     }
 
     return false;
+
+}
+
+int getHighScore() {
+
+    FILE *fp;
+    int buffer[2];
+    int i = 0;
+
+    /* バイナリで読み書きモード */
+    if((fp = fopen(saveFileName, "rb")) == NULL)
+        return 0;                                   //もしファイルがなければ, 開なければ, highScoreは0ということにする.
+
+    /* bufferにデータを格納 */
+    while(fread(&buffer[i], 4, 1, fp)) {
+        i++;
+        if(i > 1) break;
+    }
+
+    /* saveファイルらしきものがあった時 */
+    if(i != 0) {
+
+        if(i < 2) {
+            perror("Failed to read save data.\n");
+            fclose(fp);
+            return -1;
+        }
+
+        if(buffer[0] != magicNum) {
+            perror("Readed file is not save file of this game.\n");
+            fclose(fp);
+            return -1;
+        }
+
+    }
+
+    fclose(fp);
+
+    return buffer[1];
+
+}
+
+int mkMagicNum(const char* str) {
+
+    int base = 0;
+
+    for(int i = 0; i < 4; i++) {
+        base += (str[i] << (8 * (3 - i)));
+    }
+
+    return (base + 0x80808080);
+}
+
+void overWriteSpace(char *str, unsigned int len) {
+
+    while(len) {
+        str[--len] = ' ';
+    }
 
 }

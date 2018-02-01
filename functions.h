@@ -150,4 +150,11 @@ extern bool areKeysRev(const int key1, const int key2);
  *********************************************************/
 extern void addFoods(foodCdnt_t *foodPointer);
 
+/*********************************************************
+ saveHighScore() -- ハイスコアを保存する関数
+ 
+ 説明: ハイスコアを保存する
+ *********************************************************/
+extern int saveHighScore();
+
 #endif /* _FUCTIONS_H__ */
