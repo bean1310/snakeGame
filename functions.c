@@ -708,15 +708,15 @@ int getHighScore() {
     if(i != 0) {
 
         if(i < 2) {
-            perror("Failed to read save data.\n");
+            //perror("Failed to read save data.\n");
             fclose(fp);
-            return -1;
+            return 0;
         }
 
         if(buffer[0] != magicNum) {
-            perror("Readed file is not save file of this game.\n");
+            //perror("Readed file is not save file of this game.\n");
             fclose(fp);
-            return -1;
+            return 0;
         }
 
     }
