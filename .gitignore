@@ -63,3 +63,9 @@ saves/*
 !.gitkeep
 # End of https://www.gitignore.io/api/c
 snakegame
+
+# cmake
+cmake-build-*
+
+# CLion
+.idea/
