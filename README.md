@@ -9,6 +9,8 @@ You can build with the following commands.
 ```bash
 git clone https://github.com/bean1310/snakeGame.git
 cd snakeGame
+mkdir build
+cmake ..
 make
 ```
 
