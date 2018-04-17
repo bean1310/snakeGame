@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include "functions.h"
 
-#define loop(num) for(int qazwsx = 0; qazwsx < num; qazwsx++)
+#define loop(num) for(int qazwsx = 0; qazwsx < (num); qazwsx++)
 
 const char* GAME_NAME = "Snake Game";
 
@@ -87,7 +87,7 @@ static void shiftBlocks(block_t *head);
  start -- 出力をしたいy座標におけるx座標のスタート
  end -- 出力をしたいy座標におけるx座標のエンド
  *********************************************************/
-static void addchXCenter(const char *str, int y, int start, int len);
+static void addchXCenter(const char *str, int y, int start, int end);
 
 /*********************************************************
  isBody(block_t *head, int x, int y) -- (x, y)座標にヘビがいるかどうか判別
